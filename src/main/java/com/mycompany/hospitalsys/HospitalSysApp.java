@@ -39,5 +39,10 @@ public class HospitalSysApp extends JFrame {
         setSize(600, 700);
         setLayout(null);
         setVisible(true);
+        
+        Title = new JLabel("Welcome to [name] Hospital!");
+        Title.setBounds(200, 5, 170, 80);
+        add(Title);
+        
     }
 }
