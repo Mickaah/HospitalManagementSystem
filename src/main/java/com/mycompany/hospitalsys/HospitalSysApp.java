@@ -18,7 +18,6 @@ DoA = Date of Appointment
  */
 package com.mycompany.hospitalsys;
 
-import java.awt.Font;
 import javax.swing.*;
 
 /**
@@ -26,7 +25,7 @@ import javax.swing.*;
  * @author Mikeyks
  */
 public class HospitalSysApp extends JFrame {
-    private JLabel Title, landing, patpage, docpage, aptpage,
+    private JLabel Title, patpage, docpage, aptpage,
             patname, patage, patgender, patillness, medhist, apptsched,
             docname, docspec, patientlist,
             aptID, patID, DocID, DoA;
@@ -42,14 +41,8 @@ public class HospitalSysApp extends JFrame {
         setVisible(true);
         
         Title = new JLabel("Welcome to [name] Hospital!");
-        Title.setBounds(160, 5, 280, 80);
-        Title.setFont(new Font("Western", Font.PLAIN, 20));
+        Title.setBounds(200, 5, 170, 80);
         add(Title);
-        
-        landing = new JLabel("How can we help you?");
-        landing.setBounds(185, 80, 280, 80);
-        landing.setFont(new Font("Western", Font.PLAIN, 20));
-        add(landing);
         
     }
 }
