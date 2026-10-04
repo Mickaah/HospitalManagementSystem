@@ -34,10 +34,11 @@ public class HospitalSysApp extends JFrame {
             patnameF, patageF, patgenderF, patillnessF, medhistF, apptschedF,
             docnameF, docspecF, patientlistF,
             aptIDF, patIDF, DocIDF, DoAF; 
+   private JButton gtpatient, gtdoc, gtappt;
     
     HospitalSysApp () {
         setTitle("HOSPITAL MANAGEMENT APP");
-        setSize(600, 700);
+        setSize(600, 600);
         setLayout(null);
         setVisible(true);
         
@@ -51,5 +52,19 @@ public class HospitalSysApp extends JFrame {
         landing.setFont(new Font("Western", Font.PLAIN, 20));
         add(landing);
         
+        gtpatient = new JButton("Book Appointment (Patient)");
+        gtpatient.setBounds(130, 200, 320, 70);
+        gtpatient.setFont(new Font("Western", Font.PLAIN, 20));
+        add(gtpatient);
+        
+        gtdoc= new JButton("Staff Log in (Doctor)");
+        gtdoc.setBounds(130, 300, 320, 70);
+        gtdoc.setFont(new Font("Western", Font.PLAIN, 20));
+        add(gtdoc);
+        
+        gtappt = new JButton("See Appointment Dates");
+        gtappt.setBounds(130, 400, 320, 70);
+        gtappt.setFont(new Font("Western", Font.PLAIN, 20));
+        add(gtappt);
     }
 }
