@@ -16,8 +16,8 @@ Use hashing for quick patient verification.
 reference list:
 DoA = Date of Appointment
  */
-package GUI;
 
+package hospitalmanagementsystem.GUI;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,7 +38,7 @@ public class HospitalSysApp extends JFrame implements ActionListener{
             aptIDF, patIDF, DocIDF, DoAF; 
    private JButton gtpatient, gtdoc, gtappt;
     
-    HospitalSysApp () {
+    public HospitalSysApp () {
         setTitle("HOSPITAL MANAGEMENT APP");
         setSize(600, 600);
         setLayout(null);
