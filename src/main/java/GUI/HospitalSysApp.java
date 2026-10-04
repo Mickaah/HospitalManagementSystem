@@ -16,16 +16,18 @@ Use hashing for quick patient verification.
 reference list:
 DoA = Date of Appointment
  */
-package com.mycompany.hospitalsys;
+package GUI;
 
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 
 /**
  *
  * @author Mikeyks
  */
-public class HospitalSysApp extends JFrame {
+public class HospitalSysApp extends JFrame implements ActionListener{
     private JLabel Title, landing, patpage, docpage, aptpage,
             patname, patage, patgender, patillness, medhist, apptsched,
             docname, docspec, patientlist,
@@ -66,5 +68,16 @@ public class HospitalSysApp extends JFrame {
         gtappt.setBounds(130, 400, 320, 70);
         gtappt.setFont(new Font("Western", Font.PLAIN, 20));
         add(gtappt);
+        
+        gtpatient.addActionListener(this);
+        gtdoc.addActionListener(this);
+        gtappt.addActionListener(this);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == gtpatient) {
+            
+        }
     }
 }
