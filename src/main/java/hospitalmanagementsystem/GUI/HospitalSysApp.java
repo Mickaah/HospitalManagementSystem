@@ -28,12 +28,10 @@ import hospitalmanagementsystem.model.Patient;
  * @author Mikeyks
  */
 public class HospitalSysApp extends JFrame implements ActionListener{
-    private JLabel Title, landing, patpage, docpage, aptpage,
-            patname, patage, patgender, patillness, medhist, apptsched,
+    private JLabel Title, landing,
             docname, docspec, patientlist,
             aptID, patID, DocID, DoA;
-    private JTextField TitleF, patpageF, docpageF, aptpageF,
-            patnameF, patageF, patgenderF, patillnessF, medhistF, apptschedF,
+    private JTextField
             docnameF, docspecF, patientlistF,
             aptIDF, patIDF, DocIDF, DoAF; 
    private JButton gtpatient, gtdoc, gtappt;
@@ -78,7 +76,7 @@ public class HospitalSysApp extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == gtpatient) {
-            hospitalmanagementsystem.model.Patient patient = new hospitalmanagementsystem.model.Patient();
+            hospitalmanagementsystem.GUI.Patienttab patient = new hospitalmanagementsystem.GUI.Patienttab();
             this.setVisible(false);
             patient.setVisible(true);
         }
