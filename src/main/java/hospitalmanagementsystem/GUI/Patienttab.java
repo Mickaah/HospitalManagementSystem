@@ -15,7 +15,8 @@ import javax.swing.*;
 public class Patienttab extends JFrame implements ActionListener {
     private JLabel txtTitle, patname, patage, patgenlab, patillness, medhist, apptsched;
     private JComboBox<String> patgender;
-    private JTextField patnameF, patageF, patgenderF, patillnessF, medhistF, apptschedF;
+    private JTextField patnameF, patageF, medhistF, apptschedF;
+    private JTextArea patillnessF;
     private JButton btnBack;
     private String[] gend = {"male", "female", "trans(male/female)"}; 
     
@@ -62,12 +63,12 @@ public class Patienttab extends JFrame implements ActionListener {
         add(patgender);
         
         patillness= new JLabel("concern: ");
-        patillness.setBounds(10, 100, 200, 50);
+        patillness.setBounds(450, 20, 200, 50);
         patillness.setFont(new Font("Western", Font.PLAIN, 14));
         add(patillness);
         
-        patillnessF= new JTextField();
-        patillnessF.setBounds(80, 117, 250, 20);
+        patillnessF= new JTextArea();
+        patillnessF.setBounds(450, 56, 300, 60);
         patillnessF.setFont(new Font("Western", Font.PLAIN, 14));
         add(patillnessF);
         

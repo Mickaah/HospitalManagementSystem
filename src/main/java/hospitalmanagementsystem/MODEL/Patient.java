@@ -2,7 +2,7 @@ package hospitalmanagementsystem.model;
 import hospitalmanagementsystem.MODEL.Appointments;
 import java.util.ArrayList;
 import java.util.List;
-import hospitalmanagementsystem.GUI.HospitalSysApp;
+
 
 public class Patient{
     

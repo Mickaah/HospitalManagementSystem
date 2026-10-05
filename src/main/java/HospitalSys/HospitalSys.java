@@ -6,7 +6,7 @@ package hospitalsys;
 import hospitalmanagementsystem.GUI.HospitalSysApp;
 /**
  *
- * @author Mikeyks
+ * @author Micaela Magpili
  */
 public class HospitalSys {
 
