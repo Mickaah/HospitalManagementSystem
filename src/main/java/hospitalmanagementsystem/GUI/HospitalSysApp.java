@@ -22,7 +22,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-
+import hospitalmanagementsystem.model.Patient;
 /**
  *
  * @author Mikeyks
@@ -43,6 +43,7 @@ public class HospitalSysApp extends JFrame implements ActionListener{
         setSize(600, 600);
         setLayout(null);
         setVisible(true);
+        this.setLocationRelativeTo(this);
         
         Title = new JLabel("Welcome to [name] Hospital!");
         Title.setBounds(160, 5, 280, 80);
@@ -77,7 +78,9 @@ public class HospitalSysApp extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == gtpatient) {
-            
+            hospitalmanagementsystem.model.Patient patient = new hospitalmanagementsystem.model.Patient();
+            this.setVisible(false);
+            patient.setVisible(true);
         }
     }
 }

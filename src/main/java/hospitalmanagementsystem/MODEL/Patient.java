@@ -2,8 +2,15 @@ package hospitalmanagementsystem.model;
 import hospitalmanagementsystem.MODEL.Appointments;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.*;
+import hospitalmanagementsystem.GUI.HospitalSysApp;
 
-public class Patient {
+public class Patient extends JFrame implements ActionListener{
+    private JLabel txtTitle;
+    private JButton btnBack;
     private int id;
     private String name;
     private int age;
@@ -21,6 +28,24 @@ public class Patient {
         this.medicalHistory = new ArrayList<>();
         this.appointments = new ArrayList<>();
     }
+    public Patient(){
+    setTitle("HOSPITAL MANAGEMENT APP");
+        setSize(600, 600);
+        setLayout(null);
+        setVisible(true);
+        this.setLocationRelativeTo(this);
+        
+        txtTitle = new JLabel("Book an Appointment");
+        txtTitle.setBounds(160, 5, 280, 50);
+        txtTitle.setFont(new Font("Western", Font.PLAIN, 20));
+        add(txtTitle);
+        
+        btnBack = new JButton("Back");
+        btnBack.setBounds(450, 500, 100, 50);
+        add(btnBack);
+        
+        btnBack.addActionListener(this);
+}
 
     public int getId() { return id; }
     public String getName() { return name; }
@@ -41,5 +66,15 @@ public class Patient {
     @Override
     public String toString() {
         return "Patient ID: " + id + " | Name: " + name + " | Age: " + age + " | Illness: " + illness;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == btnBack){
+            hospitalmanagementsystem.GUI.HospitalSysApp menu = new hospitalmanagementsystem.GUI.HospitalSysApp();
+            this.setVisible(false);
+            menu.setVisible(true);
+        }
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
