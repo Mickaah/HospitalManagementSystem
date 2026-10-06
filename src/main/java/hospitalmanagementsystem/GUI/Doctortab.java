@@ -16,8 +16,14 @@ import javax.swing.*;
  */
 public class Doctortab extends JFrame implements ActionListener{
     private JLabel txtTop, logName, logPass;
-    private JTextField txtName, txtPass;
+    private JTextField txtName;
+    private JPasswordField txtPass;
     private JButton btnLogin, btnBack;
+    
+    private static final String[][] users = {
+        {"ShaunMurphy","iamasurgeon"},
+        {"GregoryHouse","itsneverlupus"},
+        {"AndrewWakefield","ihatevaccines"}};
     
     public Doctortab(){
         setTitle("HOSPITAL MANAGEMENT APP");
@@ -46,7 +52,7 @@ public class Doctortab extends JFrame implements ActionListener{
         logPass.setFont(new Font("Western", Font.PLAIN, 20));
         add(logPass);
         
-        txtPass = new JTextField();
+        txtPass = new JPasswordField();
         txtPass.setBounds(320, 255, 280, 30);
         txtPass.setFont(new Font("Western", Font.PLAIN, 20));
         add(txtPass);
@@ -64,13 +70,31 @@ public class Doctortab extends JFrame implements ActionListener{
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == btnBack){
-            hospitalmanagementsystem.GUI.HospitalSysApp menu = new hospitalmanagementsystem.GUI.HospitalSysApp();
-            this.setVisible(false);
-            menu.setVisible(true);
-        }
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+public void actionPerformed(ActionEvent e) {
+    if (e.getSource() == btnBack) {
+        hospitalmanagementsystem.GUI.HospitalSysApp menu = new hospitalmanagementsystem.GUI.HospitalSysApp();
+        this.setVisible(false);
+        menu.setVisible(true);
     }
-    
+    else if (e.getSource() == btnLogin) {
+        String inUser = txtName.getText();
+        char[] inPass = txtPass.getPassword();
+        boolean isValid = false;
+        for (String[] user : users) {
+            if (user[0].equals(inUser) &&
+                new String(inPass).equals(user[1])) {
+                isValid = true;
+                break;
+            }
+        }
+        if (isValid) {
+            hospitalmanagementsystem.GUI.HospitalSysApp pt = new hospitalmanagementsystem.GUI.HospitalSysApp();
+            this.setVisible(false);
+            pt.setVisible(true);
+            JOptionPane.showMessageDialog(this, "Gumagana na yung login!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Incorrect username or password.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+}
 }
