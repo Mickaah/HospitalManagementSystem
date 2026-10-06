@@ -13,16 +13,17 @@ import javax.swing.*;
  * @author Mikeyks
  */
 public class Patienttab extends JFrame implements ActionListener {
-    private JLabel txtTitle, patname, patage, patgenlab, patillness, medhist, apptsched;
-    private JComboBox<String> patgender;
-    private JTextField patnameF, patageF, medhistF, apptschedF;
-    private JTextArea patillnessF;
-    private JButton btnBack;
+    private JLabel txtTitle, patname, patage, patgenlab, patillness, medhist, apptsched, docappt;
+    private JComboBox<String> patgender, avaibdocs;
+    private JTextField patnameF, patageF, apptschedF;
+    private JTextArea patillnessF, medhistF;
+    private JButton btnBack, btnAdd, btnRemove;
     private String[] gend = {"male", "female", "trans(male/female)"}; 
+    private String[] avaib = {};
     
  public Patienttab() {
     setTitle("HOSPITAL MANAGEMENT APP");
-        setSize(900, 700);
+        setSize(870, 500);
         setLayout(null);
         setVisible(true);
         this.setLocationRelativeTo(this);
@@ -63,12 +64,12 @@ public class Patienttab extends JFrame implements ActionListener {
         add(patgender);
         
         patillness= new JLabel("concern: ");
-        patillness.setBounds(450, 20, 200, 50);
+        patillness.setBounds(450, 120, 200, 50);
         patillness.setFont(new Font("Western", Font.PLAIN, 14));
         add(patillness);
         
         patillnessF= new JTextArea();
-        patillnessF.setBounds(450, 56, 300, 60);
+        patillnessF.setBounds(510, 141, 270, 60);
         patillnessF.setFont(new Font("Western", Font.PLAIN, 14));
         add(patillnessF);
         
@@ -77,19 +78,42 @@ public class Patienttab extends JFrame implements ActionListener {
         medhist.setFont(new Font("Western", Font.PLAIN, 14));
         add(medhist);
         
-        medhistF= new JTextField();
-        medhistF.setBounds(170, 143, 200, 50);
+        medhistF= new JTextArea();
+        medhistF.setBounds(170, 141, 270, 60);
         medhistF.setFont(new Font("Western", Font.PLAIN, 14));
         add(medhistF);
         
-        apptsched= new JLabel("Appointment Date: ");
-        apptsched.setBounds(10, 200, 200, 50);
-        apptsched.setFont(new Font("Western", Font.PLAIN, 14));
+        apptsched= new JLabel("Set Appointment Date (MM/DD/YY): ");
+        apptsched.setBounds(10, 207, 250, 50);
+        apptsched.setFont(new Font("Western", Font.PLAIN, 15));
         add(apptsched);
         
+        apptschedF= new JTextField();
+        apptschedF.setBounds(240, 220, 350, 30);
+        apptschedF.setFont(new Font("Western", Font.PLAIN, 14));
+        add(apptschedF);
+        
+        docappt = new JLabel("See Doctor: ");
+        docappt.setBounds(400, 40, 190, 50);
+        docappt.setFont(new Font("Western", Font.PLAIN, 14));
+        add(docappt);
+        
+        avaibdocs = new JComboBox<>(avaib);
+        avaibdocs.setBounds(480, 55, 250, 20);
+        avaibdocs.setFont(new Font("Western", Font.PLAIN, 14));
+        add(avaibdocs);
+                
         btnBack = new JButton("Back");
-        btnBack.setBounds(800, 600, 70, 50);
-        add(btnBack);
+        btnBack.setBounds(770, 400, 70, 50);
+        add(btnBack); 
+        
+        btnAdd = new JButton("Add");
+        btnAdd.setBounds(770, 280, 70, 50);
+        add(btnAdd); 
+        
+        btnRemove = new JButton("Remove");
+        btnRemove.setBounds(750, 340, 90, 50);
+        add(btnRemove); 
         
         btnBack.addActionListener(this);
         
