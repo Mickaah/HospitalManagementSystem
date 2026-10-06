@@ -104,6 +104,7 @@ public class Patienttab extends JFrame implements ActionListener {
         add(avaibdocs);
         
         patres = new JTextArea();
+        patres.setEditable(false);
         JScrollPane scroll = new JScrollPane(patres);
         scroll.setBounds(10, 275, 720, 170);
         scroll.setFont(new Font("Western", Font.PLAIN, 14));
