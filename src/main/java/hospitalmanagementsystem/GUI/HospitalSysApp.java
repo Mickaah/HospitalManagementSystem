@@ -22,6 +22,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+import hospitalmanagementsystem.model.Patient;
 /**
  *
  * @author Mikeyks
@@ -78,11 +79,6 @@ public class HospitalSysApp extends JFrame implements ActionListener{
             hospitalmanagementsystem.GUI.Patienttab patient = new hospitalmanagementsystem.GUI.Patienttab();
             this.setVisible(false);
             patient.setVisible(true);
-        }
-        else if (e.getSource() == gtdoc){
-            hospitalmanagementsystem.GUI.Doctortab doc = new hospitalmanagementsystem.GUI.Doctortab();
-            this.setVisible(false);
-            doc.setVisible(true);
         }
     }
 }
