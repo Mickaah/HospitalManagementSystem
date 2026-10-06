@@ -16,7 +16,7 @@ public class Patienttab extends JFrame implements ActionListener {
     private JLabel txtTitle, patname, patage, patgenlab, patillness, medhist, apptsched, docappt;
     private JComboBox<String> patgender, avaibdocs;
     private JTextField patnameF, patageF, apptschedF;
-    private JTextArea patillnessF, medhistF;
+    private JTextArea patillnessF, medhistF, patres;
     private JButton btnBack, btnAdd, btnRemove;
     private String[] gend = {"male", "female", "trans(male/female)"}; 
     private String[] avaib = {};
@@ -102,6 +102,12 @@ public class Patienttab extends JFrame implements ActionListener {
         avaibdocs.setBounds(480, 55, 250, 20);
         avaibdocs.setFont(new Font("Western", Font.PLAIN, 14));
         add(avaibdocs);
+        
+        patres = new JTextArea();
+        JScrollPane scroll = new JScrollPane(patres);
+        scroll.setBounds(10, 275, 720, 170);
+        scroll.setFont(new Font("Western", Font.PLAIN, 14));
+        add(scroll);
                 
         btnBack = new JButton("Back");
         btnBack.setBounds(770, 400, 70, 50);
@@ -116,6 +122,8 @@ public class Patienttab extends JFrame implements ActionListener {
         add(btnRemove); 
         
         btnBack.addActionListener(this);
+        btnAdd.addActionListener(this);
+        btnRemove.addActionListener(this);
         
  }
     
