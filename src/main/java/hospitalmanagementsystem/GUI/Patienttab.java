@@ -135,6 +135,13 @@ public class Patienttab extends JFrame implements ActionListener {
             this.setVisible(false);
             menu.setVisible(true);
         }
+        else if(e.getSource() == btnAdd){
+            
+        }
+        
+        else if(e.getSource() == btnRemove){
+            
+        }
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
