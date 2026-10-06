@@ -1,37 +1,29 @@
 package hospitalmanagementsystem.model;
-import java.time.LocalDateTime;
 
 public class Appointments implements Comparable<Appointments> {
-    private int appointmentId, patientId, doctorId, priority;
-    private LocalDateTime date;
+    private int appointmentId;
+    private int patientId;
+    private int doctorId;
+    private String date;
+    private int urgency; // Higher value = Higher priority (1-5)
 
-    public Appointments(int appointmentId, int patientId, int doctorId, LocalDateTime date, int priority) {
+    public Appointments(int appointmentId, int patientId, int doctorId, String date, int urgency) {
         this.appointmentId = appointmentId;
         this.patientId = patientId;
         this.doctorId = doctorId;
         this.date = date;
-        this.priority = priority; // 1 = High, 3 = Low
+        this.urgency = urgency;
     }
-    public Appointments() {}
 
     public int getAppointmentId() { return appointmentId; }
-    public void setAppointmentId(int id) { this.appointmentId = id; }
     public int getPatientId() { return patientId; }
-    public void setPatientId(int id) { this.patientId = id; }
     public int getDoctorId() { return doctorId; }
-    public void setDoctorId(int id) { this.doctorId = id; }
-    public LocalDateTime getDate() { return date; }
-    public void setDate(LocalDateTime date) { this.date = date; }
-    public int getPriority() { return priority; }
-    public void setPriority(int priority) { this.priority = priority; }
+    public String getDate() { return date; }
+    public int getUrgency() { return urgency; }
 
     @Override
-    public int compareTo(Appointments o) {
-        return Integer.compare(this.priority, o.priority); // Lower number = higher priority
-    }
-
-    @Override
-    public String toString() {
-        return "Appt #" + appointmentId + " | Patient: " + patientId + " | Doctor: " + doctorId + " | Priority: " + priority;
+    public int compareTo(Appointments other) {
+        // High urgency comes first in PriorityQueue
+        return Integer.compare(other.urgency, this.urgency);
     }
 }
