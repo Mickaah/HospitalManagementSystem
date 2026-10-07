@@ -1,18 +1,30 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
+package HospitalSys;
 
-package hospitalsys;
 import hospitalmanagementsystem.GUI.HospitalSysApp;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
 /**
- *
- * @author Micaela Magpili
+ * Main Launcher File for the Hospital Management System
  */
 public class HospitalSys {
 
     public static void main(String[] args) {
-        HospitalSysApp app = new HospitalSysApp();
-        app.setVisible(true);
+        // Set built-in modern Look and Feel
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception ex) {
+            System.err.println("Could not initialize Look and Feel.");
+        }
 
+        // Launch the main GUI application window
+        SwingUtilities.invokeLater(() -> {
+            new HospitalSysApp().setVisible(true);
+        });
     }
 }

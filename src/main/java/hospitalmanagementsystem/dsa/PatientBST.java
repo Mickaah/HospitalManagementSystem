@@ -4,9 +4,13 @@ import hospitalmanagementsystem.model.Patient;
 
 public class PatientBST {
 
-    private class Node {
+    private Node root;
+
+    // Inner class representing a node in the binary search tree
+    private static class Node {
         Patient patient;
-        Node left, right;
+        Node left;
+        Node right;
 
         Node(Patient patient) {
             this.patient = patient;
@@ -15,72 +19,40 @@ public class PatientBST {
         }
     }
 
-    private Node root;
-
-    public PatientBST() {
-        this.root = null;
+    // Delete patient by ID
+    public void delete(int id) {
+        root = deleteRecursive(root, id);
     }
 
-    // --- FIX FOR LINE 29: PUBLIC INSERT METHOD ---
-    public void insert(Patient patient) {
-        root = insertRec(root, patient);
-    }
-
-    private Node insertRec(Node root, Patient patient) {
-        if (root == null) {
-            return new Node(patient);
+    private Node deleteRecursive(Node current, int id) {
+        if (current == null) {
+            return null;
         }
-        if (patient.getId() < root.patient.getId()) {
-            root.left = insertRec(root.left, patient);
-        } else if (patient.getId() > root.patient.getId()) {
-            root.right = insertRec(root.right, patient);
-        }
-        return root;
-    }
 
-    // --- SEARCH METHOD ---
-    public Patient search(int id) {
-        return searchRec(root, id);
-    }
-
-    private Patient searchRec(Node root, int id) {
-        if (root == null || root.patient.getId() == id) {
-            return (root != null) ? root.patient : null;
-        }
-        if (id < root.patient.getId()) {
-            return searchRec(root.left, id);
-        }
-        return searchRec(root.right, id);
-    }
-
-    // --- FIX FOR LINE 37: PUBLIC REMOVE METHOD ---
-    public void remove(int id) {
-        root = removeRec(root, id);
-    }
-
-    private Node removeRec(Node root, int id) {
-        if (root == null) return null;
-
-        if (id < root.patient.getId()) {
-            root.left = removeRec(root.left, id);
-        } else if (id > root.patient.getId()) {
-            root.right = removeRec(root.right, id);
+        if (id < current.patient.getId()) {
+            current.left = deleteRecursive(current.left, id);
+        } else if (id > current.patient.getId()) {
+            current.right = deleteRecursive(current.right, id);
         } else {
-            if (root.left == null) return root.right;
-            else if (root.right == null) return root.left;
+            // Case 1: Node with 0 or 1 child
+            if (current.left == null) {
+                return current.right;
+            } else if (current.right == null) {
+                return current.left;
+            }
 
-            root.patient = minValue(root.right);
-            root.right = removeRec(root.right, root.patient.getId());
+            // Case 2: Node with 2 children
+            current.patient = findMin(current.right);
+            current.right = deleteRecursive(current.right, current.patient.getId());
         }
-        return root;
+
+        return current;
     }
 
-    private Patient minValue(Node root) {
-        Patient minv = root.patient;
-        while (root.left != null) {
-            minv = root.left.patient;
-            root = root.left;
+    private Patient findMin(Node node) {
+        while (node.left != null) {
+            node = node.left;
         }
-        return minv;
+        return node.patient;
     }
 }

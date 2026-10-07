@@ -1,29 +1,48 @@
 package hospitalmanagementsystem.model;
 
-public class Appointments implements Comparable<Appointments> {
-    private int appointmentId;
+public class Appointments {
+    private int id;
     private int patientId;
     private int doctorId;
     private String date;
-    private int urgency; // Higher value = Higher priority (1-5)
+    private String time;
+    private int urgencyLevel; // e.g., 1 (Low) to 5 (Critical)
 
-    public Appointments(int appointmentId, int patientId, int doctorId, String date, int urgency) {
-        this.appointmentId = appointmentId;
+    public Appointments(int id, int patientId, int doctorId, String date, String time, int urgencyLevel) {
+        this.id = id;
         this.patientId = patientId;
         this.doctorId = doctorId;
         this.date = date;
-        this.urgency = urgency;
+        this.time = time;
+        this.urgencyLevel = urgencyLevel;
     }
 
-    public int getAppointmentId() { return appointmentId; }
-    public int getPatientId() { return patientId; }
-    public int getDoctorId() { return doctorId; }
-    public String getDate() { return date; }
-    public int getUrgency() { return urgency; }
+    // Getter required for PriorityQueue in SystemDataStructures.java
+    public int getUrgencyLevel() {
+        return urgencyLevel;
+    }
 
-    @Override
-    public int compareTo(Appointments other) {
-        // High urgency comes first in PriorityQueue
-        return Integer.compare(other.urgency, this.urgency);
+    public void setUrgencyLevel(int urgencyLevel) {
+        this.urgencyLevel = urgencyLevel;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getPatientId() {
+        return patientId;
+    }
+
+    public int getDoctorId() {
+        return doctorId;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getTime() {
+        return time;
     }
 }

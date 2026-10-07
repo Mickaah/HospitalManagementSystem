@@ -1,72 +1,60 @@
-/*
- * Description: A system for managing patient records, doctor appointments, and treatment history in hospitals.
-Key Features:
-Add, update, delete, and search for patients and doctors.
-Schedule and manage appointments.
-Generate reports on patient visits and treatments.
-Class Structure:
-Patient: Properties include id, name, age, medicalHistory, and appointments.
-Doctor: Properties include id, name, specialty, and patients.
-Appointment: Properties include appointmentId, patientId, doctorId, and date.
-Data Structures/Algorithms:
-Use a binary search tree for organizing patients by ID.
-Implement priority queues for managing appointment scheduling based on urgency.
-Use hashing for quick patient verification.
-
-reference list:
-DoA = Date of Appointment
- */
-
 package hospitalmanagementsystem.GUI;
-import java.awt.Font;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+
 /**
- *
- * @author Mikeyks
+ * Main Landing Window for Hospital Management System
  */
-public class HospitalSysApp extends JFrame implements ActionListener{
-    private JLabel Title, landing,
-            docname, docspec, patientlist,
-            aptID, patID, DocID, DoA;
-    private JTextField
-            docnameF, docspecF, patientlistF,
-            aptIDF, patIDF, DocIDF, DoAF; 
-   private JButton gtpatient, gtdoc, gtappt;
-    
-    public HospitalSysApp () {
+public class HospitalSysApp extends JFrame implements ActionListener {
+
+    private JLabel Title, landing;
+    private JButton gtpatient, gtdoc, gtappt;
+
+    public HospitalSysApp() {
         setTitle("HOSPITAL MANAGEMENT APP");
         setSize(600, 600);
         setLayout(null);
-        setVisible(true);
-        this.setLocationRelativeTo(this);
-        
-        Title = new JLabel("Welcome to [name] Hospital!");
-        Title.setBounds(160, 5, 280, 80);
-        Title.setFont(new Font("Western", Font.PLAIN, 20));
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null); // Center window on screen
+
+        // Window Background Color
+        getContentPane().setBackground(UITheme.LIGHT_BG);
+
+        // Header Title
+        Title = new JLabel("Welcome to Hospital Management!", SwingConstants.CENTER);
+        Title.setBounds(50, 30, 500, 40);
+        UIStyleUtility.styleTitleLabel(Title);
         add(Title);
-        
-        landing = new JLabel("How can we help you?");
-        landing.setBounds(185, 80, 280, 80);
-        landing.setFont(new Font("Western", Font.PLAIN, 20));
+
+        // Subtitle
+        landing = new JLabel("How can we help you?", SwingConstants.CENTER);
+        landing.setBounds(50, 80, 500, 30);
+        landing.setFont(UITheme.SUBTITLE_FONT);
+        landing.setForeground(UITheme.DARK_SLATE);
         add(landing);
-        
+
+        // Button 1: Book Appointment
         gtpatient = new JButton("Book Appointment (Patient)");
-        gtpatient.setBounds(130, 200, 320, 70);
-        gtpatient.setFont(new Font("Western", Font.PLAIN, 20));
+        gtpatient.setBounds(130, 160, 340, 60);
+        UIStyleUtility.stylePrimaryButton(gtpatient);
         add(gtpatient);
-        
-        gtdoc= new JButton("Staff Log in (Doctor)");
-        gtdoc.setBounds(130, 300, 320, 70);
-        gtdoc.setFont(new Font("Western", Font.PLAIN, 20));
+
+        // Button 2: Staff Log in
+        gtdoc = new JButton("Staff Log in (Doctor)");
+        gtdoc.setBounds(130, 250, 340, 60);
+        UIStyleUtility.stylePrimaryButton(gtdoc);
         add(gtdoc);
-        
+
+        // Button 3: See Appointment Dates
         gtappt = new JButton("See Appointment Dates");
-        gtappt.setBounds(130, 400, 320, 70);
-        gtappt.setFont(new Font("Western", Font.PLAIN, 20));
+        gtappt.setBounds(130, 340, 340, 60);
+        UIStyleUtility.stylePrimaryButton(gtappt);
+        gtappt.setBackground(UITheme.ACCENT_BLUE); 
         add(gtappt);
-        
+
+        // Event Listeners
         gtpatient.addActionListener(this);
         gtdoc.addActionListener(this);
         gtappt.addActionListener(this);
@@ -75,14 +63,35 @@ public class HospitalSysApp extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == gtpatient) {
-            hospitalmanagementsystem.GUI.Patienttab patient = new hospitalmanagementsystem.GUI.Patienttab();
+            Patienttab patient = new Patienttab();
             this.setVisible(false);
             patient.setVisible(true);
-        }
-        else if (e.getSource() == gtdoc){
-            hospitalmanagementsystem.GUI.Doctortab doc = new hospitalmanagementsystem.GUI.Doctortab();
+        } else if (e.getSource() == gtdoc) {
+            Doctortab doc = new Doctortab();
             this.setVisible(false);
             doc.setVisible(true);
+        } else if (e.getSource() == gtappt) {
+            Appointmenttab appt = new Appointmenttab();
+            this.setVisible(false);
+            appt.setVisible(true);
         }
+    }
+
+    public static void main(String[] args) {
+        // Built-in modern Look and Feel without external libraries
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception ex) {
+            System.err.println("Could not initialize Look and Feel.");
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            new HospitalSysApp().setVisible(true);
+        });
     }
 }
