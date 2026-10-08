@@ -1,94 +1,83 @@
 package hospitalmanagementsystem.dsa;
 
-import hospitalmanagementsystem.model.Appointments;
-import hospitalmanagementsystem.model.Doctor;
-import hospitalmanagementsystem.model.Patient;
-
+import hospitalmanagementsystem.model.*;
 import java.util.*;
 
 public class SystemDataStructures {
 
-    private PatientBST patientTree;
-    private Map<Integer, Patient> patientHashMap;
-    private Map<Integer, Doctor> doctorMap;
-    private PriorityQueue<Appointments> appointmentPriorityQueue;
+    // Stores patients using BST and HashMap
+    private PatientBST patientTree = new PatientBST();
+    private Map<Integer, Patient> patients = new HashMap<>();
+
+    // Stores doctors using HashMap
+    private Map<Integer, Doctor> doctors = new HashMap<>();
+
+    // Stores appointments based on urgency
+    private PriorityQueue<Appointments> appointments = new PriorityQueue<>();
+
+    // Stores all appointment records
+    private List<Appointments> history = new ArrayList<>();
     
-    // List to keep history of all appointments for GUI tables & reporting
-    private List<Appointments> appointmentHistory;
-
-    public SystemDataStructures() {
-        this.patientTree = new PatientBST();
-        this.patientHashMap = new HashMap<>();
-        this.doctorMap = new HashMap<>();
-        this.appointmentHistory = new ArrayList<>();
-
-        // Priority Queue ordered by Urgency Level
-        this.appointmentPriorityQueue = new PriorityQueue<>();
+    // Adds a patient to the system
+    public void addPatient(Patient p) {
+        patientTree.insert(p);
+        patients.put(p.getId(), p);
     }
-
-    // --- PATIENT MANAGEMENT ---
-    public void addPatient(Patient patient) {
-        patientTree.insert(patient);
-        patientHashMap.put(patient.getId(), patient);
+    // Finds a patient using their ID
+    public Patient getPatient(int id) {
+        return patients.get(id);
     }
-
-    public Patient getPatient(int patientId) {
-        return patientHashMap.get(patientId);
+    // Checks if a patient exists
+    public boolean verifyPatientExists(int id) {
+        return patients.containsKey(id);
     }
-
-    public boolean verifyPatientExists(int patientId) {
-        return patientHashMap.containsKey(patientId);
+    // Removes a patient from the system
+    public void removePatient(int id) {
+        patientTree.remove(id);
+        patients.remove(id);
     }
-
-  public void removePatient(int patientId) {
-    patientTree.remove(patientId);
-    patientHashMap.remove(patientId);
-}
-
+    // Gets all patients
     public List<Patient> getAllPatients() {
-        return new ArrayList<>(patientHashMap.values());
+        return new ArrayList<>(patients.values());
     }
-
-    // --- DOCTOR MANAGEMENT ---
-    public void addDoctor(Doctor doctor) {
-        doctorMap.put(doctor.getId(), doctor);
+    // Adds a doctor to the system
+    public void addDoctor(Doctor d) {
+        doctors.put(d.getId(), d);
     }
-
-    public Doctor getDoctor(int doctorId) {
-        return doctorMap.get(doctorId);
+    // Finds a doctor using their ID
+    public Doctor getDoctor(int id) {
+        return doctors.get(id);
     }
-
-    // ADDED: Returns Doctor list directly usable by JComboBox drop-downs in GUI
+    // Gets all doctors for the GUI
     public List<Doctor> getDoctorList() {
-        return new ArrayList<>(doctorMap.values());
+        return new ArrayList<>(doctors.values());
     }
+    // Creates and saves an appointment
+    public void scheduleAppointment(Appointments a) {
+        appointments.add(a);
+        history.add(a);
 
-    // --- APPOINTMENT MANAGEMENT ---
-    public void scheduleAppointment(Appointments appointment) {
-        appointmentPriorityQueue.add(appointment);
-        appointmentHistory.add(appointment); // Save to total history
+        Patient p = patients.get(a.getPatientId());
+        Doctor d = doctors.get(a.getDoctorId());
 
-        Patient patient = patientHashMap.get(appointment.getPatientId());
-        if (patient != null) {
-            patient.getAppointments().add(appointment);
-        }
+        // Adds appointment to the patient
+        if (p != null)
+            p.getAppointments().add(a);
 
-        Doctor doctor = doctorMap.get(appointment.getDoctorId());
-        if (doctor != null && patient != null) {
-            doctor.assignPatient(patient.getId());
-        }
+        // Assigns patient to the doctor
+        if (d != null)
+            d.assignPatient(a.getPatientId());
     }
-
+    // Gets the next highest-priority appointment
     public Appointments processNextAppointment() {
-        return appointmentPriorityQueue.poll();
+        return appointments.poll();
     }
-
-    // ADDED: Returns full history for appointment tables
+    // Gets all appointment records
     public List<Appointments> getAppointmentHistory() {
-        return appointmentHistory;
+        return history;
     }
-
+    // Gets the appointment priority queue
     public PriorityQueue<Appointments> getAppointmentPriorityQueue() {
-        return appointmentPriorityQueue;
+        return appointments;
     }
 }

@@ -4,83 +4,85 @@ import hospitalmanagementsystem.model.Patient;
 
 public class PatientBST {
 
+    // Node stores one patient in the BST
     private class Node {
         Patient patient;
         Node left, right;
 
-        Node(Patient patient) {
-            this.patient = patient;
-            this.left = null;
-            this.right = null;
+        Node(Patient p) {
+            patient = p;
         }
     }
 
     private Node root;
 
-    public PatientBST() {
-        this.root = null;
+    // Adds a patient to the BST
+    public void insert(Patient p) {
+        root = insert(root, p);
     }
 
-    // --- FIX FOR LINE 29: PUBLIC INSERT METHOD ---
-    public void insert(Patient patient) {
-        root = insertRec(root, patient);
+    // Finds the correct position for a patient
+    private Node insert(Node n, Patient p) {
+        if (n == null)
+            return new Node(p);
+
+        if (p.getId() < n.patient.getId())
+            n.left = insert(n.left, p);
+        else if (p.getId() > n.patient.getId())
+            n.right = insert(n.right, p);
+
+        return n;
     }
 
-    private Node insertRec(Node root, Patient patient) {
-        if (root == null) {
-            return new Node(patient);
-        }
-        if (patient.getId() < root.patient.getId()) {
-            root.left = insertRec(root.left, patient);
-        } else if (patient.getId() > root.patient.getId()) {
-            root.right = insertRec(root.right, patient);
-        }
-        return root;
-    }
-
-    // --- SEARCH METHOD ---
+    // Searches for a patient by ID
     public Patient search(int id) {
-        return searchRec(root, id);
+        Node n = root;
+
+        while (n != null) {
+            if (id == n.patient.getId())
+                return n.patient;
+
+            n = id < n.patient.getId() ? n.left : n.right;
+        }
+
+        return null;
     }
 
-    private Patient searchRec(Node root, int id) {
-        if (root == null || root.patient.getId() == id) {
-            return (root != null) ? root.patient : null;
-        }
-        if (id < root.patient.getId()) {
-            return searchRec(root.left, id);
-        }
-        return searchRec(root.right, id);
-    }
-
-    // --- FIX FOR LINE 37: PUBLIC REMOVE METHOD ---
+    // Removes a patient from the BST
     public void remove(int id) {
-        root = removeRec(root, id);
+        root = remove(root, id);
     }
 
-    private Node removeRec(Node root, int id) {
-        if (root == null) return null;
+    // Finds and removes the patient
+    private Node remove(Node n, int id) {
+        if (n == null)
+            return null;
 
-        if (id < root.patient.getId()) {
-            root.left = removeRec(root.left, id);
-        } else if (id > root.patient.getId()) {
-            root.right = removeRec(root.right, id);
-        } else {
-            if (root.left == null) return root.right;
-            else if (root.right == null) return root.left;
+        if (id < n.patient.getId())
+            n.left = remove(n.left, id);
 
-            root.patient = minValue(root.right);
-            root.right = removeRec(root.right, root.patient.getId());
+        else if (id > n.patient.getId())
+            n.right = remove(n.right, id);
+
+        else {
+            // If there is no left child
+            if (n.left == null)
+                return n.right;
+
+            // If there is no right child
+            if (n.right == null)
+                return n.left;
+
+            // Finds the smallest value on the right
+            Node min = n.right;
+
+            while (min.left != null)
+                min = min.left;
+
+            n.patient = min.patient;
+            n.right = remove(n.right, min.patient.getId());
         }
-        return root;
-    }
 
-    private Patient minValue(Node root) {
-        Patient minv = root.patient;
-        while (root.left != null) {
-            minv = root.left.patient;
-            root = root.left;
-        }
-        return minv;
+        return n;
     }
 }

@@ -1,34 +1,36 @@
 package hospitalmanagementsystem.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Doctor {
     private int id;
     private String name;
     private String specialty;
-    private List<Integer> assignedPatientIds;
+    private List<Integer> assignedPatientIds = new ArrayList<>();
 
+    // Creates a new doctor
     public Doctor(int id, String name, String specialty) {
         this.id = id;
         this.name = name;
         this.specialty = specialty;
-        this.assignedPatientIds = new ArrayList<>();
     }
 
+    // Gets doctor information
     public int getId() { return id; }
     public String getName() { return name; }
     public String getSpecialty() { return specialty; }
 
-    public void assignPatient(int patientId) {
-        assignedPatientIds.add(patientId);
+    // Assigns a patient to the doctor
+    public void assignPatient(int id) {
+        assignedPatientIds.add(id);
     }
 
+    // Gets all patients assigned to the doctor
     public List<Integer> getAssignedPatientIds() {
         return assignedPatientIds;
     }
 
-    @Override
+    // Displays doctor information
     public String toString() {
         return "Dr. " + name + " (" + specialty + ")";
     }
