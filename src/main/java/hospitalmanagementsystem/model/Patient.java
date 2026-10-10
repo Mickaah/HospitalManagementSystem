@@ -31,4 +31,8 @@ public class Patient {
     public void setMedicalHistory(String history) {
         this.medicalHistory = history;
     }
+
+   public void setStatus(String newStatus) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
