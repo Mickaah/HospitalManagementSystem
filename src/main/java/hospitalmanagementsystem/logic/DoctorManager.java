@@ -13,9 +13,10 @@ public class DoctorManager {
         
         // Add default sample doctors so your ComboBox isn't empty on start
         // (Adjust constructor arguments based on your Doctor model fields, e.g., ID, Name, Specialty)
-        doctorList.add(new Doctor(1, "Dr. Smith", "Cardiology"));
-        doctorList.add(new Doctor(2, "Dr. Johnson", "Pediatrics"));
-        doctorList.add(new Doctor(3, "Dr. Williams", "General Medicine"));
+        // Each sample doctor also has a username and password for the Doctor Log-In screen
+        doctorList.add(new Doctor(1, "Tambis", "Cardiology", "tambis", "tambis123"));
+        doctorList.add(new Doctor(2, "Tumampo", "Pediatrics", "tumampo", "tumampo123"));
+        doctorList.add(new Doctor(3, "Almazan", "General Medicine", "almazan", "almazan123"));
     }
 
     public static synchronized DoctorManager getInstance() {
@@ -31,6 +32,17 @@ public class DoctorManager {
             doctorList.add(doctor);
             System.out.println("Doctor Registered Successfully: " + doctor);
         }
+    }
+
+    // Checks the username and password against the registered doctors;
+    // returns the matching doctor, or null if the login is wrong
+    public Doctor login(String username, String password) {
+        for (Doctor doc : doctorList) {
+            if (doc.checkLogin(username, password)) {
+                return doc;
+            }
+        }
+        return null;
     }
 
     // Search for a doctor by their ID

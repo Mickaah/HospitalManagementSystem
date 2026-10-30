@@ -39,7 +39,7 @@ public class SystemDataStructures {
 
     // Creates the tables if needed, then fills the BST, priority queue and history from the saved rows
     private void loadFromDatabase() {
-        DatabaseConnection.initialize();
+        DataBaseConnection.initialize();
 
         for (Patient p : patientDAO.getAll()) {
             patientBST.insert(p);
