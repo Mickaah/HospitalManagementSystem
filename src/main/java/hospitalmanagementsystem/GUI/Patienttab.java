@@ -7,6 +7,8 @@ package hospitalmanagementsystem.GUI;
 import hospitalmanagementsystem.dsa.SystemDataStructures;
 // Gives access to the shared list of registered doctors
 import hospitalmanagementsystem.logic.DoctorManager;
+// Appointment model, used to save each booking in the system's data structures
+import hospitalmanagementsystem.model.Appointments;
 // Doctor model, used when looping through the registered doctors
 import hospitalmanagementsystem.model.Doctor;
 import hospitalmanagementsystem.model.Patient;
@@ -17,6 +19,9 @@ import java.awt.event.ActionListener;
 // Window listener classes, used to refresh the doctor list when the screen is shown again
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+// Lists used to keep the appointments that match the rows of the table
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -38,15 +43,19 @@ public class Patienttab extends JFrame implements ActionListener {
     
     // ADDED: Shared backend instance for BST and HashMap management
     private SystemDataStructures systemDataStructures;
+    
+    // Appointments in the same order as the table rows, so Remove deletes the right record
+    private List<Appointments> shownAppointments = new ArrayList<>();
 
     // Default constructor
     public Patienttab() {
-        this(new SystemDataStructures());
+        // Uses the shared instance so patients and appointments are kept between screens
+        this(SystemDataStructures.getInstance());
     }
 
     // Constructor accepting a shared SystemDataStructures instance
     public Patienttab(SystemDataStructures sharedDataStructures) {
-        this.systemDataStructures = (sharedDataStructures != null) ? sharedDataStructures : new SystemDataStructures();
+        this.systemDataStructures = (sharedDataStructures != null) ? sharedDataStructures : SystemDataStructures.getInstance();
 
         setTitle("HOSPITAL MANAGEMENT APP");
         setSize(870, 500);
@@ -168,6 +177,19 @@ public class Patienttab extends JFrame implements ActionListener {
         patres.addColumn("Appointment Date");
         patres.addColumn("See Doctor:");
         
+        // Shows the appointments already saved in the system, so the table is not empty
+        // when this screen is opened again after going Back
+        for (Appointments a : systemDataStructures.getAppointmentHistory()) {
+            shownAppointments.add(a);
+            patres.addRow(new Object[]{
+                a.getPatientName(),
+                a.getPatientAge(),
+                a.getPatientGender(),
+                a.getAppointmentDate(),
+                a.getDoctorName()
+            });
+        }
+        
         tab = new JTable(patres);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.getTableHeader().setResizingAllowed(false);
@@ -217,6 +239,9 @@ public class Patienttab extends JFrame implements ActionListener {
         else if (e.getSource() == btnRemove) {
             int selectedRow = tab.getSelectedRow();
             if (selectedRow != -1) {
+                // Deletes the appointment from the system's data structures, not just from the table
+                systemDataStructures.removeAppointment(shownAppointments.get(selectedRow));
+                shownAppointments.remove(selectedRow);
                 patres.removeRow(selectedRow);
             } else {
                 JOptionPane.showMessageDialog(this, "No appointments to remove.");
@@ -254,9 +279,26 @@ public class Patienttab extends JFrame implements ActionListener {
                 // Assuming the constructor order is: (int id, String name, int age, String gender) 
 // Adjust the parameters to match your Patient.java class constructor order if needed:
 int patientAge = Integer.parseInt(ageText);
-Patient newPatient = new Patient(patientId, name, patientAge, gender);
+// Uses the constructor that keeps gender and medical history in separate fields
+Patient newPatient = new Patient(patientId, name, patientAge, gender, history);
                 
                 systemDataStructures.addPatient(newPatient); // Updates BST & HashMap
+
+                // Finds the Doctor object that matches the selected drop-down item (same order as DoctorManager's list)
+                Doctor selectedDoctor = null;
+                List<Doctor> allDoctors = DoctorManager.getInstance().getAllDoctors();
+                int doctorIndex = avaibdocs.getSelectedIndex();
+                if (doctorIndex >= 0 && doctorIndex < allDoctors.size()) {
+                    selectedDoctor = allDoctors.get(doctorIndex);
+                }
+                String doctorName = (selectedDoctor != null) ? selectedDoctor.getName() : "Not selected";
+
+                // Creates the appointment (urgency level 1 by default, since the form has no urgency field)
+                // and saves it in the priority queue and history, the patient's record and the doctor's patient list
+                Appointments newAppointment = new Appointments(name, patientAge, gender,
+                        String.valueOf(patientId), doctorName, history, concern, date, 1);
+                systemDataStructures.addAppointment(newAppointment, newPatient, selectedDoctor);
+                shownAppointments.add(newAppointment);
 
                 // 4. Update visual table model
                 patres.addRow(new Object[]{
@@ -264,7 +306,7 @@ Patient newPatient = new Patient(patientId, name, patientAge, gender);
                     ageText,
                     gender,
                     date, 
-                    (doctor == null || doctor.isEmpty()) ? "Not selected" : doctor
+                    doctorName
                 });
 
                 // Clear input fields after successful addition

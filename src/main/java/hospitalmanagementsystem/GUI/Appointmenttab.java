@@ -4,9 +4,16 @@
  */
 package hospitalmanagementsystem.GUI;
 
+// Gives access to the shared appointments (loaded from the database)
+import hospitalmanagementsystem.dsa.SystemDataStructures;
+// Appointment model, used when filling the table rows
+import hospitalmanagementsystem.model.Appointments;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+// Window listener classes, used to refresh the table when the screen is shown again
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.LinkedList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -82,6 +89,30 @@ public class Appointmenttab extends JFrame implements ActionListener {
         
         btnsrch.addActionListener(this);
         btnback.addActionListener(this);
+        
+        // Fills the table with the saved appointments when this screen opens
+        loadAppointments();
+        
+        // Reloads the table each time this window becomes active, so new bookings show up
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowActivated(WindowEvent e) {
+                loadAppointments();
+            }
+        });
+    }
+    
+    // Clears the table and refills it with every appointment saved in the system
+    private void loadAppointments() {
+        sched.setRowCount(0);
+        for (Appointments a : SystemDataStructures.getInstance().getAppointmentHistory()) {
+            sched.addRow(new Object[]{
+                a.getPatientName(),
+                a.getPatientAge(),
+                a.getAppointmentDate(),
+                a.getPatientId()
+            });
+        }
     }
    
    @Override
