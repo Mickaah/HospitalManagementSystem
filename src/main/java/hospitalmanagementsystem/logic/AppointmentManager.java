@@ -1,50 +1,78 @@
 package hospitalmanagementsystem.logic;
 
+import hospitalmanagementsystem.dsa.SystemDataStructures;
 import hospitalmanagementsystem.model.Appointments;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.PriorityQueue;
 
 public class AppointmentManager {
-    private static AppointmentManager instance;
-    private PriorityQueue<Appointments> appointmentQueue;
-    private List<Appointments> appointmentHistory;
 
+    // Shared appointment system
+    private static AppointmentManager instance;
+
+    private SystemDataStructures system;
+
+    // Constructor
     private AppointmentManager() {
-        appointmentQueue = new PriorityQueue<>();
-        appointmentHistory = new ArrayList<>();
+        system = SystemDataStructures.getInstance();
     }
 
+    // Returns the shared AppointmentManager
     public static synchronized AppointmentManager getInstance() {
         if (instance == null) {
             instance = new AppointmentManager();
         }
+
         return instance;
     }
 
+    // Adds an appointment to the shared system
     public void addAppointment(Appointments appointment) {
-        appointmentQueue.offer(appointment);
-        appointmentHistory.add(appointment);
+        if (appointment != null) {
+            system.addAppointment(appointment, null, null);
+        }
     }
 
+    // Removes an appointment from the shared system
     public void removeAppointment(Appointments appointment) {
-        appointmentQueue.remove(appointment);
-        appointmentHistory.remove(appointment);
+        if (appointment != null) {
+            system.removeAppointment(appointment);
+        }
     }
 
+    // Gets all appointments for display and reporting
     public List<Appointments> getAllAppointments() {
-        return appointmentHistory;
+        return system.getAppointmentHistory();
     }
 
+    // Searches appointments by patient name, patient ID, or doctor name
     public List<Appointments> searchAppointments(String query) {
         List<Appointments> results = new ArrayList<>();
-        for (Appointments appt : appointmentHistory) {
-            if (appt.getPatientName().toLowerCase().contains(query.toLowerCase()) ||
-                appt.getPatientId().toLowerCase().contains(query.toLowerCase()) ||
-                appt.getDoctorName().toLowerCase().contains(query.toLowerCase())) { // Fixed: getDoctorName with capital D
-                results.add(appt);
+
+        if (query == null || query.trim().isEmpty()) {
+            return results;
+        }
+
+        query = query.toLowerCase().trim();
+
+        for (Appointments appointment : getAllAppointments()) {
+
+            String patientName = appointment.getPatientName();
+            String patientId = appointment.getPatientId();
+            String doctorName = appointment.getDoctorName();
+
+            if ((patientName != null
+                    && patientName.toLowerCase().contains(query))
+                || (patientId != null
+                    && patientId.toLowerCase().contains(query))
+                || (doctorName != null
+                    && doctorName.toLowerCase().contains(query))) {
+
+                results.add(appointment);
             }
         }
+
         return results;
     }
 }

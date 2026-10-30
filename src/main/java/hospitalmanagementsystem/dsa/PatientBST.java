@@ -9,80 +9,95 @@ public class PatientBST {
         Patient patient;
         Node left, right;
 
-        Node(Patient p) {
-            patient = p;
+        Node(Patient patient) {
+            this.patient = patient;
         }
     }
 
     private Node root;
 
     // Adds a patient to the BST
-    public void insert(Patient p) {
-        root = insert(root, p);
+    public void insert(Patient patient) {
+        if (patient != null) {
+            root = insert(root, patient);
+        }
     }
 
     // Finds the correct position for a patient
-    private Node insert(Node n, Patient p) {
-        if (n == null)
-            return new Node(p);
+    private Node insert(Node node, Patient patient) {
+        if (node == null) {
+            return new Node(patient);
+        }
 
-        if (p.getId() < n.patient.getId())
-            n.left = insert(n.left, p);
-        else if (p.getId() > n.patient.getId())
-            n.right = insert(n.right, p);
+        if (patient.getId() < node.patient.getId()) {
+            node.left = insert(node.left, patient);
+        } else if (patient.getId() > node.patient.getId()) {
+            node.right = insert(node.right, patient);
+        }
 
-        return n;
+        // Duplicate patient IDs are ignored
+        return node;
     }
 
-    // Searches for a patient by ID
+    // Searches for a patient using their ID
     public Patient search(int id) {
-        Node n = root;
+        Node current = root;
 
-        while (n != null) {
-            if (id == n.patient.getId())
-                return n.patient;
+        while (current != null) {
+            if (id == current.patient.getId()) {
+                return current.patient;
+            }
 
-            n = id < n.patient.getId() ? n.left : n.right;
+            if (id < current.patient.getId()) {
+                current = current.left;
+            } else {
+                current = current.right;
+            }
         }
 
         return null;
     }
 
-    // Removes a patient from the BST
+    // Removes a patient using their ID
     public void remove(int id) {
         root = remove(root, id);
     }
 
-    // Finds and removes the patient
-    private Node remove(Node n, int id) {
-        if (n == null)
+    // Finds the patient node that needs to be removed
+    private Node remove(Node node, int id) {
+        if (node == null) {
             return null;
-
-        if (id < n.patient.getId())
-            n.left = remove(n.left, id);
-
-        else if (id > n.patient.getId())
-            n.right = remove(n.right, id);
-
-        else {
-            // If there is no left child
-            if (n.left == null)
-                return n.right;
-
-            // If there is no right child
-            if (n.right == null)
-                return n.left;
-
-            // Finds the smallest value on the right
-            Node min = n.right;
-
-            while (min.left != null)
-                min = min.left;
-
-            n.patient = min.patient;
-            n.right = remove(n.right, min.patient.getId());
         }
 
-        return n;
+        if (id < node.patient.getId()) {
+            node.left = remove(node.left, id);
+        } else if (id > node.patient.getId()) {
+            node.right = remove(node.right, id);
+        } else {
+            // No left child
+            if (node.left == null) {
+                return node.right;
+            }
+
+            // No right child
+            if (node.right == null) {
+                return node.left;
+            }
+
+            // Find the smallest node in the right subtree
+            Node smallest = node.right;
+
+            while (smallest.left != null) {
+                smallest = smallest.left;
+            }
+
+            // Replace the current patient with the smallest patient
+            node.patient = smallest.patient;
+
+            // Remove the duplicate node
+            node.right = remove(node.right, smallest.patient.getId());
+        }
+
+        return node;
     }
 }
