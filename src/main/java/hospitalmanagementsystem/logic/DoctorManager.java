@@ -17,6 +17,8 @@ public class DoctorManager {
         doctorList.add(new Doctor(1, "Tambis", "Cardiology", "tambis", "tambis123"));
         doctorList.add(new Doctor(2, "Tumampo", "Pediatrics", "tumampo", "tumampo123"));
         doctorList.add(new Doctor(3, "Almazan", "General Medicine", "almazan", "almazan123"));
+        doctorList.add(new Doctor(4, "Magpili", "Dermatologist", "magpili", "magpili123"));
+        doctorList.add(new Doctor(5, "Guce", "Psychiatrists", "guce", "guce123"));
     }
 
     public static synchronized DoctorManager getInstance() {
