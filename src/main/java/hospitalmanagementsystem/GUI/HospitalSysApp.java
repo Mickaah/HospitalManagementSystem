@@ -28,6 +28,7 @@ import javax.swing.*;
  * @author Mikeyks
  */
 public class HospitalSysApp extends JFrame implements ActionListener{
+    private JLabel Title, landing;
     private JLabel Title, landing,
             aptID, DoA;
     // Logo drawn at the top of the menu (defined in the LogoPanel class)
