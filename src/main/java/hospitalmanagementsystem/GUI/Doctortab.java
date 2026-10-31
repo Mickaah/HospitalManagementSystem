@@ -11,6 +11,10 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import java.util.LinkedList;
 import javax.swing.*;
+// Gives access to the registered doctors, used to check the login
+import hospitalmanagementsystem.logic.DoctorManager;
+// Doctor model, used for the doctor who logs in
+import hospitalmanagementsystem.model.Doctor;
 
 /**
  *
@@ -18,7 +22,9 @@ import javax.swing.*;
  */
 public class Doctortab extends JFrame implements ActionListener{
     private JLabel txtTop, logName, logPass;
-    private JTextField txtName, txtPass;
+    // Password box hides the typed characters
+    private JTextField txtName;
+    private JPasswordField txtPass;
     private JButton btnLogin, btnBack;
     private JPanel backgroundPanel;
     //comment
@@ -56,7 +62,7 @@ public class Doctortab extends JFrame implements ActionListener{
         logPass.setFont(new Font("Western", Font.PLAIN, 20));
         add(logPass);
         
-        txtPass = new JTextField();
+        txtPass = new JPasswordField();
         txtPass.setBounds(320, 255, 280, 30);
         txtPass.setFont(new Font("Western", Font.PLAIN, 20));
         add(txtPass);
@@ -82,12 +88,33 @@ public class Doctortab extends JFrame implements ActionListener{
         }
         else if (e.getSource()== btnLogin) {
             
+            // Checks the typed username and password against the doctors registered in DoctorManager
+            String username = txtName.getText().trim();
+            String password = new String(txtPass.getPassword());
+            
+            // Stops here and shows a message if either box is empty
+            if (username.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter your username and password.");
+                return;
+            }
+            
+            // Asks DoctorManager for the doctor with this login; null means no doctor matches
+            Doctor loggedIn = DoctorManager.getInstance().login(username, password);
+            if (loggedIn == null) {
+                JOptionPane.showMessageDialog(this, "Invalid username or password.",
+                        "Log-In Failed", JOptionPane.ERROR_MESSAGE);
+                txtPass.setText("");
+                return;
+            }
+            
             //Caller part to DoctorHomepage
-            hospitalmanagementsystem.GUI.Doctorhomepage app =new hospitalmanagementsystem.GUI.Doctorhomepage();
+            // Passes the logged-in doctor so the home page can show their name, specialty and ID
+            hospitalmanagementsystem.GUI.Doctorhomepage app =new hospitalmanagementsystem.GUI.Doctorhomepage(loggedIn);
             this.setVisible(false);
            app.setVisible(true);
         }
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        // (the throw statement that was here ran after every click, so it was removed)
     }
     
 }

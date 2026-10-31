@@ -5,11 +5,18 @@
 package hospitalmanagementsystem.GUI;
 
 import hospitalmanagementsystem.dsa.SystemDataStructures;
+// Gives access to the shared list of registered doctors
+import hospitalmanagementsystem.logic.DoctorManager;
+// Doctor model, used when looping through the registered doctors
+import hospitalmanagementsystem.model.Doctor;
 import hospitalmanagementsystem.model.Patient;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+// Window listener classes, used to refresh the doctor list when the screen is shown again
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -137,6 +144,18 @@ public class Patienttab extends JFrame implements ActionListener {
         avaibdocs.setFont(new Font("Western", Font.BOLD, 14));
         add(avaibdocs);
         
+        // Fills the See Doctor drop-down with the doctors registered in DoctorManager
+        loadDoctorsIntoComboBox();
+        
+        // Reloads the doctor list each time this window becomes active, so doctors registered
+        // elsewhere show up without reopening the app
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowActivated(WindowEvent e) {
+                loadDoctorsIntoComboBox();
+            }
+        });
+        
         patres = new DefaultTableModel(){
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -173,6 +192,19 @@ public class Patienttab extends JFrame implements ActionListener {
         btnBack.addActionListener(this);
         btnAdd.addActionListener(this);
         btnRemove.addActionListener(this);
+    }
+    
+    // Rebuilds the See Doctor drop-down from DoctorManager's list of doctors,
+    // keeping the current selection if that doctor is still in the list
+    private void loadDoctorsIntoComboBox() {
+        Object previousSelection = avaibdocs.getSelectedItem();
+        avaibdocs.removeAllItems();
+        for (Doctor doc : DoctorManager.getInstance().getAllDoctors()) {
+            avaibdocs.addItem(doc.toString());
+        }
+        if (previousSelection != null) {
+            avaibdocs.setSelectedItem(previousSelection);
+        }
     }
     
     @Override

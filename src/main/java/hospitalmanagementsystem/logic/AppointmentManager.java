@@ -2,89 +2,49 @@ package hospitalmanagementsystem.logic;
 
 import hospitalmanagementsystem.model.Appointments;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.PriorityQueue;
 
 public class AppointmentManager {
-    
-    private List<Appointments> appointmentList;
+    private static AppointmentManager instance;
+    private PriorityQueue<Appointments> appointmentQueue;
+    private List<Appointments> appointmentHistory;
 
-    public AppointmentManager() {
-        this.appointmentList = new ArrayList<>();
+    private AppointmentManager() {
+        appointmentQueue = new PriorityQueue<>();
+        appointmentHistory = new ArrayList<>();
     }
 
-    // Schedule a new appointment and keep the list sorted by urgency
-    public void scheduleAppointment(Appointments appointment) {
-        if (appointment != null) {
-            appointmentList.add(appointment);
-            // Sorts automatically using your Comparable implementation in Appointments
-            Collections.sort(appointmentList);
-            System.out.println("Appointment Scheduled Successfully (ID: " + appointment.getAppointmentId() + ")");
+    public static synchronized AppointmentManager getInstance() {
+        if (instance == null) {
+            instance = new AppointmentManager();
         }
+        return instance;
     }
 
-    // Get the most urgent appointment (the first one in the sorted list)
-    public Appointments getNextUrgentAppointment() {
-        if (appointmentList.isEmpty()) {
-            return null;
-        }
-        return appointmentList.get(0);
+    public void addAppointment(Appointments appointment) {
+        appointmentQueue.offer(appointment);
+        appointmentHistory.add(appointment);
     }
 
-    // Find all appointments for a specific Patient ID
-    public List<Appointments> getAppointmentsByPatient(int patientId) {
-        List<Appointments> result = new ArrayList<>();
-        for (Appointments appt : appointmentList) {
-            if (appt.getPatientId() == patientId) {
-                result.add(appt);
-            }
-        }
-        return result;
+    public void removeAppointment(Appointments appointment) {
+        appointmentQueue.remove(appointment);
+        appointmentHistory.remove(appointment);
     }
 
-    // Find all appointments assigned to a specific Doctor ID
-    public List<Appointments> getAppointmentsByDoctor(int doctorId) {
-        List<Appointments> result = new ArrayList<>();
-        for (Appointments appt : appointmentList) {
-            if (appt.getDoctorId() == doctorId) {
-                result.add(appt);
-            }
-        }
-        return result;
-    }
-
-    // Cancel / remove an appointment by its ID
-    public boolean cancelAppointment(int appointmentId) {
-        for (int i = 0; i < appointmentList.size(); i++) {
-            if (appointmentList.get(i).getAppointmentId() == appointmentId) {
-                appointmentList.remove(i);
-                System.out.println("Appointment ID " + appointmentId + " has been cancelled.");
-                return true;
-            }
-        }
-        System.out.println("Appointment ID " + appointmentId + " not found.");
-        return false;
-    }
-
-    // Return the full list of appointments (sorted by urgency)
     public List<Appointments> getAllAppointments() {
-        return appointmentList;
+        return appointmentHistory;
     }
 
-    // Display all scheduled appointments
-    public void displayAllAppointments() {
-        if (appointmentList.isEmpty()) {
-            System.out.println("No appointments currently scheduled.");
-            return;
+    public List<Appointments> searchAppointments(String query) {
+        List<Appointments> results = new ArrayList<>();
+        for (Appointments appt : appointmentHistory) {
+            if (appt.getPatientName().toLowerCase().contains(query.toLowerCase()) ||
+                appt.getPatientId().toLowerCase().contains(query.toLowerCase()) ||
+                appt.getDoctorName().toLowerCase().contains(query.toLowerCase())) { // Fixed: getDoctorName with capital D
+                results.add(appt);
+            }
         }
-        
-        System.out.println("--- Scheduled Appointments (Ordered by Urgency) ---");
-        for (Appointments appt : appointmentList) {
-            System.out.println("Appt ID: " + appt.getAppointmentId() + 
-                               " | Patient ID: " + appt.getPatientId() + 
-                               " | Doctor ID: " + appt.getDoctorId() + 
-                               " | Date: " + appt.getDate() + 
-                               " | Urgency: " + appt.getUrgency());
-        }
+        return results;
     }
 }

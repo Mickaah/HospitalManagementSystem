@@ -1,80 +1,117 @@
 package hospitalmanagementsystem.dsa;
 
-import hospitalmanagementsystem.model.*;
-import java.util.*;
+import hospitalmanagementsystem.database.AppointmentDAO;
+import hospitalmanagementsystem.database.DataBaseConnection;
+import hospitalmanagementsystem.database.PatientDAO;
+import hospitalmanagementsystem.model.Appointments;
+import hospitalmanagementsystem.model.Doctor;
+import hospitalmanagementsystem.model.Patient;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.PriorityQueue;
 
 public class SystemDataStructures {
+    // The one shared copy used by every screen, so patients and appointments are kept when you switch screens
+    private static SystemDataStructures instance;
 
-    // Stores patients using BST and HashMap
-    private PatientBST patientTree = new PatientBST();
-    private Map<Integer, Patient> patients = new HashMap<>();
+    private PriorityQueue<Appointments> appointments;
+    private List<Appointments> history;
+    private PatientBST patientBST;
 
-    // Stores doctors using HashMap
-    private Map<Integer, Doctor> doctors = new HashMap<>();
+    // Classes that save and load patients and appointments in the database
+    private PatientDAO patientDAO = new PatientDAO();
+    private AppointmentDAO appointmentDAO = new AppointmentDAO();
 
-    // Stores appointments based on urgency
-    private PriorityQueue<Appointments> appointments = new PriorityQueue<>();
-
-    // Stores all appointment records
-    private List<Appointments> history = new ArrayList<>();
-
-    // Adds a patient to the system
-    public void addPatient(Patient p) {
-        patientTree.insert(p);
-        patients.put(p.getId(), p);
+    public SystemDataStructures() {
+        appointments = new PriorityQueue<>();
+        history = new ArrayList<>();
+        patientBST = new PatientBST();
     }
 
-    // Finds a patient using their ID
-    public Patient getPatient(int id) {
-        return patients.get(id);
+    // Returns the shared instance, creating it and loading the saved data the first time it is asked for
+    public static synchronized SystemDataStructures getInstance() {
+        if (instance == null) {
+            instance = new SystemDataStructures();
+            instance.loadFromDatabase();
+        }
+        return instance;
     }
 
-    // Checks if a patient exists
-    public boolean verifyPatientExists(int id) {
-        return patients.containsKey(id);
+    // Creates the tables if needed, then fills the BST, priority queue and history from the saved rows
+    private void loadFromDatabase() {
+        DataBaseConnection.initialize();
+
+        for (Patient p : patientDAO.getAll()) {
+            patientBST.insert(p);
+        }
+
+        for (Appointments a : appointmentDAO.getAll()) {
+            appointments.offer(a);
+            history.add(a);
+
+            // Links the appointment back to its patient
+            try {
+                Patient p = patientBST.search(Integer.parseInt(a.getPatientId()));
+                if (p != null) {
+                    p.getAppointments().add(a);
+                }
+            } catch (NumberFormatException e) {
+                System.err.println("Skipping patient link for appointment with ID " + a.getAppointmentId());
+            }
+        }
+    }
+    
+    // Verify if a patient exists by ID (Hashing / BST check)
+    public boolean verifyPatientExists(int patientId) {
+        // If you are using your PatientBST or a hash map for verification:
+        return patientBST.search(patientId) != null; 
     }
 
-    // Removes a patient from the system
-    public void removePatient(int id) {
-        patientTree.remove(id);
-        patients.remove(id);
+    // Finds a patient in the BST by ID; returns null if there is none
+    public Patient findPatient(int patientId) {
+        return patientBST.search(patientId);
     }
 
-    // Gets all patients
-    public List<Patient> getAllPatients() {
-        return new ArrayList<>(patients.values());
+    // Add a new patient to the system
+    public void addPatient(Patient patient) {
+        if (patient != null) {
+            patientBST.insert(patient);
+            // Also saves the patient in the database
+            patientDAO.insert(patient);
+        }
     }
 
-    // Adds a doctor to the system
-    public void addDoctor(Doctor d) {
-        doctors.put(d.getId(), d);
-    }
+    // Adds appointment to the priority queue and history list
+    public void addAppointment(Appointments a, Patient p, Doctor d) {
+        // Saves the appointment in the database first, so it gets its database ID
+        appointmentDAO.insert(a);
 
-    // Finds a doctor using their ID
-    public Doctor getDoctor(int id) {
-        return doctors.get(id);
-    }
-
-    // Gets all doctors for the GUI
-    public List<Doctor> getDoctorList() {
-        return new ArrayList<>(doctors.values());
-    }
-
-    // Creates and saves an appointment
-    public void scheduleAppointment(Appointments a) {
-        appointments.add(a);
+        appointments.offer(a);
         history.add(a);
 
-        Patient p = patients.get(a.getPatientId());
-        Doctor d = doctors.get(a.getDoctorId());
-
-        // Adds appointment to the patient
-        if (p != null)
+        // Adds appointment to the patient if patient exists
+        if (p != null) {
             p.getAppointments().add(a);
+        }
 
-        // Assigns patient to the doctor
-        if (d != null)
-            d.assignPatient(a.getPatientId());
+        // Assigns patient to the doctor if doctor exists (Parsed to int to match Doctor model)
+        if (d != null) {
+            try {
+                d.assignPatient(Integer.parseInt(a.getPatientId()));
+            } catch (NumberFormatException e) {
+                // Fallback if patientId contains letters; adjust Doctor.java if needed
+                System.err.println("Error parsing patient ID to int: " + e.getMessage());
+            }
+        }
+    }
+
+    // Removes an appointment from the priority queue, the history list and the database
+    public void removeAppointment(Appointments a) {
+        appointments.remove(a);
+        history.remove(a);
+        if (a.getAppointmentId() > 0) {
+            appointmentDAO.delete(a.getAppointmentId());
+        }
     }
 
     // Gets the next highest-priority appointment

@@ -29,11 +29,18 @@ import javax.swing.*;
  */
 public class HospitalSysApp extends JFrame implements ActionListener{
     private JLabel Title, landing;
+    private JLabel Title, landing,
+            aptID, DoA;
+    // Logo drawn at the top of the menu (defined in the LogoPanel class)
+    private LogoPanel logoPanel;
+    private JTextField
+            docnameF, docspecF, patientlistF,
+            aptIDF, patIDF, DocIDF, DoAF; 
    private JButton gtpatient, gtdoc, gtappt;
    private JPanel backgroundPanel;
     
     public HospitalSysApp () {
-        setTitle("HOSPITAL MANAGEMENT APP");
+        setTitle("De Senta Ambroccio Hospital App");
         setSize(600, 600);
         setLayout(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -44,30 +51,38 @@ public class HospitalSysApp extends JFrame implements ActionListener{
         setVisible(true);
         this.setLocationRelativeTo(this);
         
+        // Creates the 100x100 drawn logo and places it centered at the top of the menu
+        logoPanel = new LogoPanel(100);
+        logoPanel.setBounds(240, 10, 100, 100);
+        add(logoPanel);
+        
+        // Uses the same drawn logo as the window's title bar icon
+        setIconImage(LogoPanel.getLogoImage(64));
+        
         Title = new JLabel("""
                            Welcome to De Santa Ambroccio
                             Hospital!""");
-        Title.setBounds(107, 5, 400, 100);
+        Title.setBounds(107, 105, 400, 100);
         Title.setFont(new Font("Western", Font.BOLD, 20));
         add(Title);
         
         landing = new JLabel("How can we help you?");
-        landing.setBounds(185, 80, 280, 80);
+        landing.setBounds(185, 180, 280, 80);
         landing.setFont(new Font("Western", Font.PLAIN, 20));
         add(landing);
         
         gtpatient = new JButton("Book Appointment (Patient)");
-        gtpatient.setBounds(130, 200, 320, 70);
+        gtpatient.setBounds(130, 280, 320, 70);
         gtpatient.setFont(new Font("Western", Font.PLAIN, 20));
         add(gtpatient);
         
         gtdoc= new JButton("Staff Log in (Doctor)");
-        gtdoc.setBounds(130, 300, 320, 70);
+        gtdoc.setBounds(130, 370, 320, 70);
         gtdoc.setFont(new Font("Western", Font.PLAIN, 20));
         add(gtdoc);
         
         gtappt = new JButton("See Appointment Dates");
-        gtappt.setBounds(130, 400, 320, 70);
+        gtappt.setBounds(130, 460, 320, 70);
         gtappt.setFont(new Font("Western", Font.PLAIN, 20));
         add(gtappt);
         

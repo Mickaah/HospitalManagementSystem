@@ -14,5 +14,6 @@ public class HospitalSys {
         HospitalSysApp app = new HospitalSysApp();
         app.setVisible(true);
 
+        
     }
 }

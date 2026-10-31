@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+// Doctor model, used to show the logged-in doctor's details
+import hospitalmanagementsystem.model.Doctor;
 
 /**
  *
@@ -22,8 +24,13 @@ public class Doctorhomepage extends JFrame implements ActionListener {
     private JTextField SrcField;
     private JPanel backgroundPanel;
   
-    
+    // Opens the home page without a doctor, so the placeholder texts stay on the labels
     Doctorhomepage() {
+        this(null);
+    }
+    
+    // Opens the home page for the doctor who logged in
+    Doctorhomepage(Doctor doctor) {
         setSize(870, 500);
         setLayout(null);
         setVisible(true);
@@ -53,6 +60,13 @@ public class Doctorhomepage extends JFrame implements ActionListener {
         DocID.setBounds(670, 10, 280, 50);
         DocID.setFont(new Font("Western", Font.PLAIN, 16));
         add(DocID);
+        
+        // Replaces the placeholder texts with the logged-in doctor's name, specialty and ID
+        if (doctor != null) {
+            docname.setText("Dr. " + doctor.getName());
+            docspec.setText(doctor.getSpecialty());
+            DocID.setText("ID number: " + doctor.getId());
+        }
         
         Src = new JLabel("Search Appointments");
         Src.setBounds(10, 57, 200, 50);
