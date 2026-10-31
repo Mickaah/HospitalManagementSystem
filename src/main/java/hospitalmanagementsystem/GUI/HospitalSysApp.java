@@ -28,11 +28,7 @@ import javax.swing.*;
  * @author Mikeyks
  */
 public class HospitalSysApp extends JFrame implements ActionListener{
-    private JLabel Title, landing,
-            aptID, DoA;
-    private JTextField
-            docnameF, docspecF, patientlistF,
-            aptIDF, patIDF, DocIDF, DoAF; 
+    private JLabel Title, landing;
    private JButton gtpatient, gtdoc, gtappt;
    private JPanel backgroundPanel;
     
