@@ -29,13 +29,8 @@ import javax.swing.*;
  */
 public class HospitalSysApp extends JFrame implements ActionListener{
     private JLabel Title, landing;
-    private JLabel Title, landing,
-            aptID, DoA;
     // Logo drawn at the top of the menu (defined in the LogoPanel class)
     private LogoPanel logoPanel;
-    private JTextField
-            docnameF, docspecF, patientlistF,
-            aptIDF, patIDF, DocIDF, DoAF; 
    private JButton gtpatient, gtdoc, gtappt;
    private JPanel backgroundPanel;
     

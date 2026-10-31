@@ -20,6 +20,7 @@ import hospitalmanagementsystem.model.Doctor;
 public class Doctorhomepage extends JFrame implements ActionListener {
     private JLabel greeting, docname, docspec, patientlist, DocID, Src;
     private DefaultTableModel patientsched;
+    private JTable tab;
     private JButton btnSearch,  btnBack;
     private JTextField SrcField;
     private JPanel backgroundPanel;
@@ -83,12 +84,25 @@ public class Doctorhomepage extends JFrame implements ActionListener {
         patientlist.setFont(new Font("Western", Font.PLAIN, 14));
         add(patientlist);
         
+         patientsched = new DefaultTableModel() {
+            @Override
+        public boolean isCellEditable(int row, int column) {
+       return false;
+   }
+    };
+        
         patientsched = new DefaultTableModel();
         patientsched.addColumn("patient name:");
         patientsched.addColumn("patient age:");
         patientsched.addColumn("Appointment Date");
         patientsched.addColumn("Patient ID:");
-        JTable tab = new JTable(patientsched);
+        
+        tab = new JTable(patientsched);
+        tab.getTableHeader().setReorderingAllowed(false);
+        tab.getTableHeader().setResizingAllowed(false);
+        tab.getTableHeader().setBackground(Color.decode("#bdfdc5"));
+        tab.getTableHeader().setForeground(Color.BLACK);
+        
         JScrollPane scroll = new JScrollPane(tab);
         scroll.setBounds(10, 130, 720, 305);
         scroll.setFont(new Font("Western", Font.PLAIN, 14));
