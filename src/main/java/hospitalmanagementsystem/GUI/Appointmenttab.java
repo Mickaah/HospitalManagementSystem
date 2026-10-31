@@ -72,6 +72,8 @@ public class Appointmenttab extends JFrame implements ActionListener {
         tab = new JTable(sched);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.getTableHeader().setResizingAllowed(false);
+        tab.getTableHeader().setBackground(Color.decode("#bdfdc5"));
+        tab.getTableHeader().setForeground(Color.BLACK);
         
         JScrollPane scroll = new JScrollPane(tab);
         scroll.setBounds(10, 100, 720, 335);
