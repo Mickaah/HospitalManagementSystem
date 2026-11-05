@@ -17,14 +17,15 @@ public class DataBaseConnection {
     }
 
     public static void initialize() {
+        // Added AUTO_INCREMENT to patients table so IDs don't conflict/duplicate
         String patients = "CREATE TABLE IF NOT EXISTS patients ("
-                + "id INT PRIMARY KEY, "
+                + "id INT AUTO_INCREMENT PRIMARY KEY, "
                 + "name VARCHAR(100) NOT NULL, "
                 + "age INT, "
                 + "gender VARCHAR(20), "
                 + "medical_history TEXT)";
 
-        // Added specialty to match your AppointmentDAO
+        // Changed urgency_level from INT to VARCHAR(50) to support strings like "4 - Critical"
         String appointments = "CREATE TABLE IF NOT EXISTS appointments ("
                 + "appointment_id INT AUTO_INCREMENT PRIMARY KEY, "
                 + "patient_id INT NOT NULL, "
@@ -36,10 +37,10 @@ public class DataBaseConnection {
                 + "medical_history TEXT, "
                 + "concern TEXT, "
                 + "appointment_date VARCHAR(50), "
-                + "urgency_level INT)";
+                + "urgency_level VARCHAR(50))";
 
         try (Connection conn = getConnection(); Statement st = conn.createStatement()) {
-            st.execute(patients);
+            st.execute(patients); // Fixed: using st instead of stA
             st.execute(appointments);
             System.out.println("Database connected and tables initialized successfully!");
         } catch (SQLException e) {

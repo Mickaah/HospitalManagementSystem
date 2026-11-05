@@ -8,10 +8,14 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 // Doctor model, used to show the logged-in doctor's details
 import hospitalmanagementsystem.model.Doctor;
+// Appointment model and manager, used to list the appointments booked under this doctor
+import hospitalmanagementsystem.logic.AppointmentManager;
+import hospitalmanagementsystem.model.Appointments;
 import java.awt.Image;
 
 /**
@@ -26,6 +30,8 @@ public class Doctorhomepage extends JFrame implements ActionListener {
     private JTextField SrcField;
     private JPanel backgroundPanel;
     private ImageIcon image;
+    // The doctor who logged in, kept so the table only shows this doctor's appointments (null shows every appointment)
+    private Doctor doctor;
   
     // Opens the home page without a doctor, so the placeholder texts stay on the labels
     Doctorhomepage() {
@@ -34,6 +40,7 @@ public class Doctorhomepage extends JFrame implements ActionListener {
     
     // Opens the home page for the doctor who logged in
     Doctorhomepage(Doctor doctor) {
+        this.doctor = doctor;
         setSize(870, 500);
         setLayout(null);
         setVisible(true);
@@ -96,7 +103,6 @@ public class Doctorhomepage extends JFrame implements ActionListener {
    }
     };
         
-        patientsched = new DefaultTableModel();
         patientsched.addColumn("patient name:");
         patientsched.addColumn("patient age:");
         patientsched.addColumn("Appointment Date");
@@ -123,6 +129,44 @@ public class Doctorhomepage extends JFrame implements ActionListener {
         
         btnBack.addActionListener(this);
         btnSearch.addActionListener(this);
+        
+        // Fills the table with this doctor's appointments when the page opens
+        showAppointments("");
+    }
+
+    // Loads the saved appointments from MySQL, then fills the table with this doctor's appointments (most urgent first)
+    // whose patient name or Patient ID contains the keyword; an empty keyword shows all of them. Returns how many rows were shown
+    private int showAppointments(String keyword) {
+        AppointmentManager manager = AppointmentManager.getInstance();
+        manager.loadFromDatabase();
+
+        patientsched.setRowCount(0); // Clear current table rows
+
+        List<Appointments> appointments;
+        if (doctor != null) {
+            appointments = manager.getAppointmentsForDoctor(doctor.getName());
+        } else {
+            appointments = manager.getPriorityQueueAppointments();
+        }
+
+        String key = keyword.trim().toLowerCase();
+        int shown = 0;
+        for (Appointments appt : appointments) {
+            String patientId = String.valueOf(appt.getPatientId());
+            boolean matches = key.isEmpty()
+                    || appt.getPatientName().toLowerCase().contains(key)
+                    || patientId.toLowerCase().contains(key);
+            if (matches) {
+                patientsched.addRow(new Object[]{
+                    appt.getPatientName(),
+                    appt.getPatientAge(),
+                    appt.getAppointmentDate(),
+                    patientId
+                });
+                shown++;
+            }
+        }
+        return shown;
     }
 
     @Override
@@ -135,6 +179,12 @@ public class Doctorhomepage extends JFrame implements ActionListener {
         
         if (e.getSource() == btnSearch){
             //logic here!!
+            // Filters this doctor's appointments by the text in the search box and tells the user when nothing matches
+            String keyword = SrcField.getText().trim();
+            int shown = showAppointments(keyword);
+            if (shown == 0 && !keyword.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No matching appointments found.", "Search Result", JOptionPane.INFORMATION_MESSAGE);
+            }
         }
     }
 }
