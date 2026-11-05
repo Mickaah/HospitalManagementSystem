@@ -4,6 +4,7 @@ import hospitalmanagementsystem.database.AppointmentDAO;
 import hospitalmanagementsystem.model.Appointments;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -21,6 +22,7 @@ public class Appointmenttab extends JFrame implements ActionListener {
     private JButton btnsrch, btnback;
     private JTable tab;
     private JPanel backgroundPanel;
+    private ImageIcon image;
     
     public Appointmenttab() {
         setTitle("APPOINTMENT MANAGER");
@@ -32,6 +34,9 @@ public class Appointmenttab extends JFrame implements ActionListener {
         backgroundPanel.setLayout(null);
         backgroundPanel.setBackground(new Color(153, 197, 144));
         setContentPane(backgroundPanel);
+        image = new ImageIcon("src/main/java/hospitalmanagementsystem/GUI/Logo.png");
+        Image scaledImage = image.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+        setIconImage(scaledImage);
         this.setLocationRelativeTo(null);
         
         title = new JLabel("Welcome!");

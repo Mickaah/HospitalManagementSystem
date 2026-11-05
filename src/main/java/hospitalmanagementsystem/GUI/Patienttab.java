@@ -12,6 +12,7 @@ import hospitalmanagementsystem.model.Doctor;
 import hospitalmanagementsystem.model.Patient;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -32,6 +33,7 @@ public class Patienttab extends JFrame implements ActionListener {
     private JTable tab; 
     private JButton btnBack, btnAdd, btnRemove;
     private JPanel backgroundPanel;
+    private ImageIcon image;
     private String[] gend = {"male", "female", "trans(male/female)"}; 
     private String[] avaib = {};
     
@@ -51,9 +53,12 @@ public class Patienttab extends JFrame implements ActionListener {
         backgroundPanel.setLayout(null);
         backgroundPanel.setBackground(new Color(153, 197, 144));
         setContentPane(backgroundPanel);
+        image = new ImageIcon("src/main/java/hospitalmanagementsystem/GUI/Logo.png");
+        Image scaledImage = image.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+        setIconImage(scaledImage);
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setLocationRelativeTo(this);
+        this.setLocationRelativeTo(null);
         
         txtTitle = new JLabel("Book an Appointment");
         txtTitle.setBounds(10, 5, 280, 50);

@@ -15,6 +15,7 @@ import javax.swing.*;
 import hospitalmanagementsystem.logic.DoctorManager;
 // Doctor model, used for the doctor who logs in
 import hospitalmanagementsystem.model.Doctor;
+import java.awt.Image;
 
 /**
  *
@@ -27,6 +28,7 @@ public class Doctortab extends JFrame implements ActionListener{
     private JPasswordField txtPass;
     private JButton btnLogin, btnBack;
     private JPanel backgroundPanel;
+    private ImageIcon image;
     //comment
     
     public Doctortab(){
@@ -40,7 +42,10 @@ public class Doctortab extends JFrame implements ActionListener{
         backgroundPanel.setLayout(null);
         backgroundPanel.setBackground(new Color(153, 197, 144));
         setContentPane(backgroundPanel);
-        this.setLocationRelativeTo(this);
+        image = new ImageIcon("src/main/java/hospitalmanagementsystem/GUI/Logo.png");
+        Image scaledImage = image.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+        setIconImage(scaledImage);
+        this.setLocationRelativeTo(null);
         
         txtTop = new JLabel("Doctor Log-In");
         txtTop.setBounds(350, 100, 280, 50);
