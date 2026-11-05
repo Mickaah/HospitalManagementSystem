@@ -1,13 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package hospitalmanagementsystem.GUI;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.LinkedList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -53,21 +53,22 @@ public class Appointmenttab extends JFrame implements ActionListener {
         search.setFont(new Font("Western", Font.PLAIN, 14));
         add(search);
         
-         searchF = new JTextField();
+        searchF = new JTextField();
         searchF.setBounds(150, 74, 200, 20);
         searchF.setFont(new Font("Western", Font.PLAIN, 14));
         add(searchF);
         
-         sched = new DefaultTableModel() {
+        sched = new DefaultTableModel() {
             @Override
-        public boolean isCellEditable(int row, int column) {
-       return false;
-   }
-    };
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         sched.addColumn("patient name:");
-        sched.addColumn("patient age:");
+        sched.addColumn("doctor name:");
+        sched.addColumn("specialty:");
         sched.addColumn("Appointment Date");
-        sched.addColumn("Patient ID:"); 
+        sched.addColumn("ID:"); 
         
         tab = new JTable(sched);
         tab.getTableHeader().setReorderingAllowed(false);
@@ -90,17 +91,48 @@ public class Appointmenttab extends JFrame implements ActionListener {
         
         btnsrch.addActionListener(this);
         btnback.addActionListener(this);
+        
+       
+        loadAppointmentsFromDatabase();
+    }
+   
+    private void loadAppointmentsFromDatabase() {
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/doctor_accs?zeroDateTimeBehavior=CONVERT_TO_NULL", "root", "");
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM appointments");
+            
+            
+            sched.setRowCount(0);
+            
+            while (rs.next()) {
+                Object[] row = {
+                    rs.getString("patient_name"),
+                    rs.getString("doctor_name"),
+                    rs.getString("specialty"),
+                    rs.getString("appointment_date"),
+                    rs.getInt("id")
+                };
+                sched.addRow(row);
+            }
+            rs.close();
+            st.close();
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error loading appointments from database.");
+        }
     }
    
    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnsrch) {
-            //logic here
-    }    
+            // Pwede lagyan ng search logic dito gamit ang searchF.getText()
+        }    
          if (e.getSource() == btnback) {
            hospitalmanagementsystem.GUI.HospitalSysApp menu = new hospitalmanagementsystem.GUI.HospitalSysApp();
             this.setVisible(false);
             menu.setVisible(true);
-   }
-}
+       }
+    }
 }
