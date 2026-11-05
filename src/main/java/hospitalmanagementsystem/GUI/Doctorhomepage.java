@@ -12,6 +12,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 // Doctor model, used to show the logged-in doctor's details
 import hospitalmanagementsystem.model.Doctor;
+import java.awt.Image;
 
 /**
  *
@@ -24,6 +25,7 @@ public class Doctorhomepage extends JFrame implements ActionListener {
     private JButton btnSearch,  btnBack;
     private JTextField SrcField;
     private JPanel backgroundPanel;
+    private ImageIcon image;
   
     // Opens the home page without a doctor, so the placeholder texts stay on the labels
     Doctorhomepage() {
@@ -40,7 +42,10 @@ public class Doctorhomepage extends JFrame implements ActionListener {
         backgroundPanel.setLayout(null);
         backgroundPanel.setBackground(new Color(153, 197, 144));
         setContentPane(backgroundPanel);
-        this.setLocationRelativeTo(this);
+        image = new ImageIcon("src/main/java/hospitalmanagementsystem/GUI/Logo.png");
+        Image scaledImage = image.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+        setIconImage(scaledImage);
+        this.setLocationRelativeTo(null);
         
         greeting = new JLabel("Hello, Welcome,");
         greeting.setBounds(10, 5, 280, 50);

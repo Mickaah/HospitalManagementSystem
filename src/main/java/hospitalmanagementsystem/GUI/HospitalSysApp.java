@@ -51,7 +51,7 @@ public class HospitalSysApp extends JFrame implements ActionListener{
         hoslogo.setBounds(240, 10, 120, 120); 
         backgroundPanel.add(hoslogo);
         setVisible(true);
-        this.setLocationRelativeTo(this);
+        this.setLocationRelativeTo(null);
 
         
         //image icon for taskbar design
