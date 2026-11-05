@@ -9,41 +9,48 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-// Reads and writes appointment rows in the database
 public class AppointmentDAO {
 
-    // Saves an appointment and gives it the ID the database generated for it
     public boolean insert(Appointments a) {
         String sql = "INSERT INTO appointments (patient_id, patient_name, patient_age, patient_gender, "
-                + "doctor_name, medical_history, concern, appointment_date, urgency_level) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "doctor_name, specialty, medical_history, concern, appointment_date, urgency_level) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DataBaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, Integer.parseInt(a.getPatientId()));
+            
+            int patId = 0;
+            try {
+                patId = Integer.parseInt(a.getPatientId());
+            } catch (Exception e) {
+                patId = 0;
+            }
+
+            ps.setInt(1, patId);
             ps.setString(2, a.getPatientName());
             ps.setInt(3, a.getPatientAge());
             ps.setString(4, a.getPatientGender());
             ps.setString(5, a.getDoctorName());
-            ps.setString(6, a.getMedicalHistory());
-            ps.setString(7, a.getConcern());
-            ps.setString(8, a.getAppointmentDate());
-            ps.setInt(9, a.getUrgencyLevel());
+            ps.setString(6, a.getSpecialty());
+            ps.setString(7, a.getMedicalHistory());
+            ps.setString(8, a.getConcern());
+            ps.setString(9, a.getAppointmentDate());
+            ps.setInt(10, a.getUrgencyLevel());
+            
             ps.executeUpdate();
 
-            // Stores the generated ID on the appointment so it can be deleted later
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) {
                     a.setAppointmentId(keys.getInt(1));
                 }
             }
             return true;
-        } catch (SQLException | NumberFormatException e) {
+        } catch (SQLException e) {
             System.err.println("Could not save appointment: " + e.getMessage());
+            e.printStackTrace(); // Prints the full error stack trace to NetBeans output
             return false;
         }
     }
 
-    // Loads every saved appointment, oldest first
     public List<Appointments> getAll() {
         List<Appointments> list = new ArrayList<>();
         String sql = "SELECT * FROM appointments ORDER BY appointment_id";
@@ -57,10 +64,12 @@ public class AppointmentDAO {
                         rs.getString("patient_gender"),
                         String.valueOf(rs.getInt("patient_id")),
                         rs.getString("doctor_name"),
+                        rs.getString("specialty"),
                         rs.getString("medical_history"),
                         rs.getString("concern"),
                         rs.getString("appointment_date"),
-                        rs.getInt("urgency_level"));
+                        rs.getInt("urgency_level")
+                );
                 a.setAppointmentId(rs.getInt("appointment_id"));
                 list.add(a);
             }
@@ -70,7 +79,6 @@ public class AppointmentDAO {
         return list;
     }
 
-    // Deletes an appointment by its database ID
     public boolean delete(int appointmentId) {
         String sql = "DELETE FROM appointments WHERE appointment_id = ?";
         try (Connection conn = DataBaseConnection.getConnection();

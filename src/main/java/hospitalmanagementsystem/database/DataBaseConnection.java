@@ -5,11 +5,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-// Opens connections to the XAMPP MySQL database and creates tables if they don't exist
 public class DataBaseConnection {
     
-    // Update "hospital_db" to match the actual database name you created in XAMPP phpMyAdmin
-    private static final String URL = "jdbc:mysql://localhost:3306/hospital_db?useSSL=false&serverTimezone=UTC";
+    
+    private static final String URL = "jdbc:mysql://localhost:3306/doctor_accs?useSSL=false&serverTimezone=UTC";
     private static final String USER = "root"; // Default XAMPP username
     private static final String PASSWORD = ""; // Default XAMPP password is usually blank
 
