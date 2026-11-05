@@ -20,6 +20,7 @@ DoA = Date of Appointment
 package hospitalmanagementsystem.GUI;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
@@ -28,11 +29,10 @@ import javax.swing.*;
  * @author Mikeyks
  */
 public class HospitalSysApp extends JFrame implements ActionListener{
-    private JLabel Title, landing;
-    // Logo drawn at the top of the menu (defined in the LogoPanel class)
-    private LogoPanel logoPanel;
+    private JLabel Title, landing, hoslogo; //logo name added
    private JButton gtpatient, gtdoc, gtappt;
    private JPanel backgroundPanel;
+   private ImageIcon image;
     
     public HospitalSysApp () {
         setTitle("De Senta Ambroccio Hospital App");
@@ -43,16 +43,20 @@ public class HospitalSysApp extends JFrame implements ActionListener{
         backgroundPanel.setLayout(null);
         backgroundPanel.setBackground(new Color(153, 197, 144));
         setContentPane(backgroundPanel);
+        
+        //image adjustments 
+        image = new ImageIcon("src/main/java/hospitalmanagementsystem/GUI/Logo.png");
+        Image scaledImage = image.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        hoslogo = new JLabel(new ImageIcon(scaledImage));
+        hoslogo.setBounds(250, 10, 100, 100); 
+        backgroundPanel.add(hoslogo);
         setVisible(true);
         this.setLocationRelativeTo(this);
+
         
-        // Creates the 100x100 drawn logo and places it centered at the top of the menu
-        logoPanel = new LogoPanel(100);
-        logoPanel.setBounds(240, 10, 100, 100);
-        add(logoPanel);
+        //image icon for taskbar
+        setIconImage(scaledImage);
         
-        // Uses the same drawn logo as the window's title bar icon
-        setIconImage(LogoPanel.getLogoImage(64));
         
         Title = new JLabel("""
                            Welcome to De Santa Ambroccio
