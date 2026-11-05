@@ -54,7 +54,7 @@ public class HospitalSysApp extends JFrame implements ActionListener{
         this.setLocationRelativeTo(this);
 
         
-        //image icon for taskbar
+        //image icon for taskbar design
         setIconImage(scaledImage);
         
         
