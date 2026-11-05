@@ -1,14 +1,12 @@
 package hospitalmanagementsystem.GUI;
 
+import hospitalmanagementsystem.database.AppointmentDAO;
+import hospitalmanagementsystem.model.Appointments;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.LinkedList;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -21,12 +19,10 @@ public class Appointmenttab extends JFrame implements ActionListener {
     private JTextField searchF;
     private DefaultTableModel sched;
     private JButton btnsrch, btnback;
-    private DefaultListModel<String> src;
-    private LinkedList<String> srchlst;
     private JTable tab;
     private JPanel backgroundPanel;
     
-    Appointmenttab() {
+    public Appointmenttab() {
         setTitle("APPOINTMENT MANAGER");
         setSize(870, 500);
         setLayout(null);
@@ -36,7 +32,7 @@ public class Appointmenttab extends JFrame implements ActionListener {
         backgroundPanel.setLayout(null);
         backgroundPanel.setBackground(new Color(153, 197, 144));
         setContentPane(backgroundPanel);
-        this.setLocationRelativeTo(this);
+        this.setLocationRelativeTo(null);
         
         title = new JLabel("Welcome!");
         title.setBounds(10, 5, 280, 50);
@@ -92,44 +88,32 @@ public class Appointmenttab extends JFrame implements ActionListener {
         btnsrch.addActionListener(this);
         btnback.addActionListener(this);
         
-       
         loadAppointmentsFromDatabase();
     }
    
     private void loadAppointmentsFromDatabase() {
-        try {
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/doctor_accs?zeroDateTimeBehavior=CONVERT_TO_NULL", "root", "");
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM appointments");
-            
-            
-            sched.setRowCount(0);
-            
-            while (rs.next()) {
-                Object[] row = {
-                    rs.getString("patient_name"),
-                    rs.getString("doctor_name"),
-                    rs.getString("specialty"),
-                    rs.getString("appointment_date"),
-                    rs.getInt("id")
-                };
-                sched.addRow(row);
-            }
-            rs.close();
-            st.close();
-            conn.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error loading appointments from database.");
+        sched.setRowCount(0);
+        AppointmentDAO dao = new AppointmentDAO();
+        List<Appointments> list = dao.getAll();
+        
+        for (Appointments a : list) {
+            Object[] row = {
+                a.getPatientName(),
+                a.getDoctorName(),
+                a.getSpecialty(),
+                a.getAppointmentDate(),
+                a.getAppointmentId() // Correctly targets appointment_id
+            };
+            sched.addRow(row);
         }
     }
    
-   @Override
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnsrch) {
-            // Pwede lagyan ng search logic dito gamit ang searchF.getText()
+            // Optional search logic using searchF.getText()
         }    
-         if (e.getSource() == btnback) {
+        if (e.getSource() == btnback) {
            hospitalmanagementsystem.GUI.HospitalSysApp menu = new hospitalmanagementsystem.GUI.HospitalSysApp();
             this.setVisible(false);
             menu.setVisible(true);

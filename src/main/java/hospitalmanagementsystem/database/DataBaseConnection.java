@@ -6,18 +6,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DataBaseConnection {
-    
-    
+
     private static final String URL = "jdbc:mysql://localhost:3306/doctor_accs?useSSL=false&serverTimezone=UTC";
-    private static final String USER = "root"; // Default XAMPP username
-    private static final String PASSWORD = ""; // Default XAMPP password is usually blank
+    private static final String USER = "root";
+    private static final String PASSWORD = "";
 
     // Returns a new connection to the XAMPP MySQL database
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
-    // Creates the patients and appointments tables if they don't exist yet (MySQL syntax)
     public static void initialize() {
         String patients = "CREATE TABLE IF NOT EXISTS patients ("
                 + "id INT PRIMARY KEY, "
@@ -26,6 +24,7 @@ public class DataBaseConnection {
                 + "gender VARCHAR(20), "
                 + "medical_history TEXT)";
 
+        // Added specialty to match your AppointmentDAO
         String appointments = "CREATE TABLE IF NOT EXISTS appointments ("
                 + "appointment_id INT AUTO_INCREMENT PRIMARY KEY, "
                 + "patient_id INT NOT NULL, "
@@ -33,6 +32,7 @@ public class DataBaseConnection {
                 + "patient_age INT, "
                 + "patient_gender VARCHAR(20), "
                 + "doctor_name VARCHAR(100), "
+                + "specialty VARCHAR(100), " 
                 + "medical_history TEXT, "
                 + "concern TEXT, "
                 + "appointment_date VARCHAR(50), "

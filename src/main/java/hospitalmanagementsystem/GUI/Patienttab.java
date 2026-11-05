@@ -4,17 +4,16 @@
  */
 package hospitalmanagementsystem.GUI;
 
+import hospitalmanagementsystem.database.AppointmentDAO;
 import hospitalmanagementsystem.dsa.SystemDataStructures;
-// Gives access to the shared list of registered doctors
 import hospitalmanagementsystem.logic.DoctorManager;
-// Doctor model, used when looping through the registered doctors
+import hospitalmanagementsystem.model.Appointments;
 import hospitalmanagementsystem.model.Doctor;
 import hospitalmanagementsystem.model.Patient;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-// Window listener classes, used to refresh the doctor list when the screen is shown again
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.*;
@@ -30,21 +29,18 @@ public class Patienttab extends JFrame implements ActionListener {
     private JTextField patnameF, patageF, apptschedF, patIDF;
     private JTextArea patillnessF, medhistF; 
     private DefaultTableModel patres;
-    private JTable tab; // Class-level variable so actionPerformed can access it
+    private JTable tab; 
     private JButton btnBack, btnAdd, btnRemove;
     private JPanel backgroundPanel;
     private String[] gend = {"male", "female", "trans(male/female)"}; 
     private String[] avaib = {};
     
-    // ADDED: Shared backend instance for BST and HashMap management
     private SystemDataStructures systemDataStructures;
 
-    // Default constructor
     public Patienttab() {
         this(new SystemDataStructures());
     }
 
-    // Constructor accepting a shared SystemDataStructures instance
     public Patienttab(SystemDataStructures sharedDataStructures) {
         this.systemDataStructures = (sharedDataStructures != null) ? sharedDataStructures : new SystemDataStructures();
 
@@ -144,11 +140,8 @@ public class Patienttab extends JFrame implements ActionListener {
         avaibdocs.setFont(new Font("Western", Font.BOLD, 14));
         add(avaibdocs);
         
-        // Fills the See Doctor drop-down with the doctors registered in DoctorManager
         loadDoctorsIntoComboBox();
         
-        // Reloads the doctor list each time this window becomes active, so doctors registered
-        // elsewhere show up without reopening the app
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowActivated(WindowEvent e) {
@@ -196,8 +189,6 @@ public class Patienttab extends JFrame implements ActionListener {
         btnRemove.addActionListener(this);
     }
     
-    // Rebuilds the See Doctor drop-down from DoctorManager's list of doctors,
-    // keeping the current selection if that doctor is still in the list
     private void loadDoctorsIntoComboBox() {
         Object previousSelection = avaibdocs.getSelectedItem();
         avaibdocs.removeAllItems();
@@ -234,7 +225,6 @@ public class Patienttab extends JFrame implements ActionListener {
             String date = apptschedF.getText().trim();
             String doctor = (String) avaibdocs.getSelectedItem();
 
-            // 1. Check for missing required input fields
             if (idText.isEmpty() || name.isEmpty() || ageText.isEmpty() || concern.isEmpty() || date.isEmpty() || gender.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please fill in all required fields, including Patient ID.");
                 return;
@@ -242,25 +232,42 @@ public class Patienttab extends JFrame implements ActionListener {
 
             try {
                 int patientId = Integer.parseInt(idText);
+                int patientAge = Integer.parseInt(ageText);
 
-                // 2. CHECK FOR DUPLICATE PATIENTS via SystemDataStructures
                 if (systemDataStructures.verifyPatientExists(patientId)) {
                     JOptionPane.showMessageDialog(this, 
                         "A patient with ID " + patientId + " already exists!", 
                         "Duplicate Record Error", 
                         JOptionPane.WARNING_MESSAGE);
-                    return; // Prevent duplicate row insertion
+                    return; 
                 }
 
-                // 3. Create Patient object and insert into system DSA
-                // Assuming the constructor order is: (int id, String name, int age, String gender) 
-// Adjust the parameters to match your Patient.java class constructor order if needed:
-int patientAge = Integer.parseInt(ageText);
-Patient newPatient = new Patient(patientId, name, patientAge, gender);
-                
-                systemDataStructures.addPatient(newPatient); // Updates BST & HashMap
+                // 1. Save Patient to DSA/Memory structure
+                Patient newPatient = new Patient(patientId, name, patientAge, gender);
+                systemDataStructures.addPatient(newPatient);
 
-                // 4. Update visual table model
+                // 2. CRITICAL: Save Appointment to MySQL Database via AppointmentDAO
+                Appointments newAppt = new Appointments(
+                    name, 
+                    patientAge, 
+                    gender, 
+                    idText, 
+                    (doctor == null) ? "Not selected" : doctor, 
+                    "General", // Default specialty
+                    history, 
+                    concern, 
+                    date, 
+                    1 // Default urgency level
+                );
+                
+                AppointmentDAO dao = new AppointmentDAO();
+                boolean dbSuccess = dao.insert(newAppt);
+
+                if (!dbSuccess) {
+                    JOptionPane.showMessageDialog(this, "Warning: Patient added locally, but failed to save to MySQL database.");
+                }
+
+                // 3. Update visual table model
                 patres.addRow(new Object[]{
                     name, 
                     ageText,
@@ -277,7 +284,7 @@ Patient newPatient = new Patient(patientId, name, patientAge, gender);
                 medhistF.setText("");
                 apptschedF.setText("");
 
-                JOptionPane.showMessageDialog(this, "Appointment added successfully!");
+                JOptionPane.showMessageDialog(this, "Appointment added and saved to database successfully!");
 
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, 
