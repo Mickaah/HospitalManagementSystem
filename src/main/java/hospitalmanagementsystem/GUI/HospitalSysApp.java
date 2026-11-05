@@ -46,15 +46,15 @@ public class HospitalSysApp extends JFrame implements ActionListener{
         
         //image adjustments 
         image = new ImageIcon("src/main/java/hospitalmanagementsystem/GUI/Logo.png");
-        Image scaledImage = image.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        Image scaledImage = image.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);
         hoslogo = new JLabel(new ImageIcon(scaledImage));
-        hoslogo.setBounds(250, 10, 100, 100); 
+        hoslogo.setBounds(240, 10, 120, 120); 
         backgroundPanel.add(hoslogo);
         setVisible(true);
         this.setLocationRelativeTo(this);
 
         
-        //image icon for taskbar
+        //image icon for taskbar design
         setIconImage(scaledImage);
         
         
