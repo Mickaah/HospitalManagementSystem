@@ -11,6 +11,23 @@ import java.util.List;
 
 public class AppointmentDAO {
 
+    // Returns the appointment's specialty, or reads it from the brackets in the doctor name (e.g. "Dr. Almazan (General Medicine)") when it is empty
+    public static String resolveSpecialty(Appointments a) {
+        String specialty = a.getSpecialty();
+        if (specialty != null && !specialty.trim().isEmpty()) {
+            return specialty.trim();
+        }
+        String doctor = a.getDoctorName();
+        if (doctor != null) {
+            int open = doctor.lastIndexOf('(');
+            int close = doctor.lastIndexOf(')');
+            if (open >= 0 && close > open) {
+                return doctor.substring(open + 1, close).trim();
+            }
+        }
+        return "";
+    }
+
     public boolean insert(Appointments a) {
         String sql = "INSERT INTO appointments (patient_id, patient_name, patient_age, patient_gender, "
                 + "doctor_name, specialty, medical_history, concern, appointment_date, urgency_level) "
@@ -30,11 +47,11 @@ public class AppointmentDAO {
             ps.setInt(3, a.getPatientAge());
             ps.setString(4, a.getPatientGender());
             ps.setString(5, a.getDoctorName());
-            ps.setString(6, a.getSpecialty());
+            ps.setString(6, resolveSpecialty(a)); // saves the specialty, filled in from the doctor name when it was left empty
             ps.setString(7, a.getMedicalHistory());
             ps.setString(8, a.getConcern());
             ps.setString(9, a.getAppointmentDate());
-            ps.setInt(10, a.getUrgencyLevel());
+            ps.setString(10, a.getUrgencyLevel()); // CHANGED from setInt to setString to store text like "2 - Medium"
             
             ps.executeUpdate();
 
@@ -46,7 +63,7 @@ public class AppointmentDAO {
             return true;
         } catch (SQLException e) {
             System.err.println("Could not save appointment: " + e.getMessage());
-            e.printStackTrace(); // Prints the full error stack trace to NetBeans output
+            e.printStackTrace(); 
             return false;
         }
     }
@@ -68,7 +85,7 @@ public class AppointmentDAO {
                         rs.getString("medical_history"),
                         rs.getString("concern"),
                         rs.getString("appointment_date"),
-                        rs.getInt("urgency_level")
+                        rs.getString("urgency_level") // CHANGED from getInt to getString to load text like "2 - Medium"
                 );
                 a.setAppointmentId(rs.getInt("appointment_id"));
                 list.add(a);
