@@ -171,6 +171,8 @@ public class Patienttab extends JFrame implements ActionListener {
         tab = new JTable(patres);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.getTableHeader().setResizingAllowed(false);
+        tab.getTableHeader().setBackground(Color.decode("#bdfdc5"));
+        tab.getTableHeader().setForeground(Color.BLACK);
         
         JScrollPane scroll = new JScrollPane(tab);
         scroll.setBounds(10, 275, 720, 160);

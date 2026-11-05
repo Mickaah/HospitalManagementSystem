@@ -4,6 +4,7 @@
  */
 package hospitalmanagementsystem.GUI;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +24,7 @@ public class Appointmenttab extends JFrame implements ActionListener {
     private DefaultListModel<String> src;
     private LinkedList<String> srchlst;
     private JTable tab;
+    private JPanel backgroundPanel;
     
     Appointmenttab() {
         setTitle("APPOINTMENT MANAGER");
@@ -30,6 +32,10 @@ public class Appointmenttab extends JFrame implements ActionListener {
         setLayout(null);
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        backgroundPanel = new JPanel();
+        backgroundPanel.setLayout(null);
+        backgroundPanel.setBackground(new Color(153, 197, 144));
+        setContentPane(backgroundPanel);
         this.setLocationRelativeTo(this);
         
         title = new JLabel("Welcome!");
@@ -66,6 +72,8 @@ public class Appointmenttab extends JFrame implements ActionListener {
         tab = new JTable(sched);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.getTableHeader().setResizingAllowed(false);
+        tab.getTableHeader().setBackground(Color.decode("#bdfdc5"));
+        tab.getTableHeader().setForeground(Color.BLACK);
         
         JScrollPane scroll = new JScrollPane(tab);
         scroll.setBounds(10, 100, 720, 335);
