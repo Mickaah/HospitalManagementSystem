@@ -40,7 +40,7 @@ public class DataBaseConnection {
                 + "urgency_level VARCHAR(50))";
 
         try (Connection conn = getConnection(); Statement st = conn.createStatement()) {
-            st.execute(patients);
+            st.execute(patients); // Fixed: using st instead of stA
             st.execute(appointments);
             System.out.println("Database connected and tables initialized successfully!");
         } catch (SQLException e) {
