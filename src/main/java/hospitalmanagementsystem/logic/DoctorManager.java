@@ -3,30 +3,58 @@ package hospitalmanagementsystem.logic;
 import hospitalmanagementsystem.model.Doctor;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.*;
+import javax.swing.JOptionPane;
 
 public class DoctorManager {
+            
     private static DoctorManager instance;
-    private List<Doctor> doctorList;
+    private ArrayList<Doctor> doctorList = new ArrayList<>();
 
-    private DoctorManager() {
-        this.doctorList = new ArrayList<>();
-        
-        // Add default sample doctors so your ComboBox isn't empty on start
-        // (Adjust constructor arguments based on your Doctor model fields, e.g., ID, Name, Specialty)
-        // Each sample doctor also has a username and password for the Doctor Log-In screen
-        doctorList.add(new Doctor(1, "Tambis", "Cardiology", "tambis", "tambis123"));
-        doctorList.add(new Doctor(2, "Tumampo", "Pediatrics", "tumampo", "tumampo123"));
-        doctorList.add(new Doctor(3, "Almazan", "General Medicine", "almazan", "almazan123"));
-        doctorList.add(new Doctor(4, "Magpili", "Dermatologist", "magpili", "magpili123"));
-        doctorList.add(new Doctor(5, "Guce", "Psychiatrists", "guce", "guce123"));
+    private DoctorManager(){
+        loadDoc();
     }
-
+    
     public static synchronized DoctorManager getInstance() {
         if (instance == null) {
             instance = new DoctorManager();
         }
         return instance;
     }
+    
+    private void loadDoc(){
+        Connection conn = null;
+            try{
+                Class.forName("com.mysql.jdbc.Driver");
+                conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/doctor_accs?zeroDateTimeBehavior=CONVERT_TO_NULL","root","");
+            }catch(Exception e) {
+                JOptionPane.showMessageDialog(null,"Server not found.");
+                e.printStackTrace();
+            }
+            try {
+                Statement st = conn.createStatement();
+                ResultSet rs = st.executeQuery("SELECT * FROM accounts");
+
+                while (rs.next()){
+                    Doctor d = new Doctor(
+                        rs.getInt("id"),
+                        rs.getString("NAME"),
+                        rs.getString("SPEC"),
+                        rs.getString("USERNAME"),
+                        rs.getString("PASSWORD")
+                    );
+                    doctorList.add(d);
+                }
+                rs.close();
+                st.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    public ArrayList<Doctor> getDoc() {
+        return doctorList;
+    }
+    
 
     // Add a new doctor 
     public void addDoctor(Doctor doctor) {
@@ -38,9 +66,9 @@ public class DoctorManager {
 
     // Checks the username and password against the registered doctors;
     // returns the matching doctor, or null if the login is wrong
-    public Doctor login(String username, String password) {
+    public Doctor login(String USERNAME, String PASSWORD) {
         for (Doctor doc : doctorList) {
-            if (doc.checkLogin(username, password)) {
+            if (doc.checkLogin(USERNAME, PASSWORD)) {
                 return doc;
             }
         }
